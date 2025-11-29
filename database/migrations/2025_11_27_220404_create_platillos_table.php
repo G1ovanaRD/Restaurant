@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('precio', 8, 2);
             $table->string('categoria');
             $table->string('imagen');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

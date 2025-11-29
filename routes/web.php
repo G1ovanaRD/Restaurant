@@ -6,6 +6,7 @@ use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\TwoFactor;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
+use App\Http\Controllers\AdminController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -32,4 +33,10 @@ Route::middleware(['auth'])->group(function () {
             ),
         )
         ->name('two-factor.show');
+    
+    Route::get('platillos', [adminController::class, 'platillos'])->name('platillos.index');
+    Route::post('platillos/save', [adminController::class, 'platilloSave'])->name('platillos.save');
+    Route::delete('platillos/delete/{id}', [adminController::class, 'platilloDelete'])->name('platillos.delete');
+    Route::get('platillos/show/{id}', [adminController::class, 'platilloShow'])->name('platillos.show');
+    Route::post('platillos/update/{id}', [adminController::class, 'platilloUPdate'])->name('platillos.update');
 });
