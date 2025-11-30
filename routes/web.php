@@ -39,4 +39,9 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('platillos/delete/{id}', [adminController::class, 'platilloDelete'])->name('platillos.delete');
     Route::get('platillos/show/{id}', [adminController::class, 'platilloShow'])->name('platillos.show');
     Route::post('platillos/update/{id}', [adminController::class, 'platilloUPdate'])->name('platillos.update');
+    Route::get('mesas', [adminController::class, 'mesas'])->name('mesas.index');
+    Route::post('mesas/save', [adminController::class, 'mesaSave'])->name('mesas.save');
+    Route::delete('mesas/delete/{id}', [adminController::class, 'mesaDelete'])->name('mesas.delete');
+    Route::get('mesas/show/{id}', [adminController::class, 'mesaShow'])->name('mesas.show');
+    Route::post('mesas/update/{id}', [adminController::class, 'mesaUpdate'])->name('mesas.update');
 });
