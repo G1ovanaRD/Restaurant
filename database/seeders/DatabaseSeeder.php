@@ -21,5 +21,12 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
             'rol' => 'admin'
         ]);
+
+        User::create([
+            'name' => 'Pibito',
+            'email' => 'pibe@gmail.com',
+            'password' => bcrypt('pibito123'),
+            'rol' => 'cliente'
+        ]);
     }
 }
