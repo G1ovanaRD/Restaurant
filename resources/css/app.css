@@ -22,10 +22,38 @@
     --color-zinc-800: #262626;
     --color-zinc-900: #171717;
     --color-zinc-950: #0a0a0a;
-
+    --color-red: #DE3F1F ;
     --color-accent: var(--color-neutral-800);
     --color-accent-content: var(--color-neutral-800);
     --color-accent-foreground: var(--color-white);
+
+    
+}
+
+:root {
+    --green-food:#7AD953;
+    --black-food:#000000;
+}
+
+@layer utilities {
+    .text-green-food {
+        color: var(--green-food);
+    }
+    .text-black-food {
+        color: var(--black-food);
+    }
+
+    .bg-green-food {
+        background-color: var(--green-food);
+    }
+
+    .bg-black-food {
+        background-color: var(--black-food);
+    }
+
+    .fill-green-food {
+        fill: var(--green-food);
+    }
 }
 
 @layer theme {
