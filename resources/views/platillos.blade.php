@@ -51,7 +51,11 @@
             <flux:input label="Nombre" placeholder="Nombre" wire:model='nombre'/>
             <flux:textarea label="Descripcion" placeholder="Descripción" wire:model='descripcion'/>
             <flux:input label="Precio" placeholder="Precio" type="number" step="0.01" wire:model='precio'/>
-            <flux:input label="Categoría" placeholder="Categoría" wire:model='categoria'/>
+            <flux:select label="Categoría" wire:model="categoria">
+                @foreach($categorias as $value => $label)
+                    <option value="{{ $value }}">{{ $label }}</option>
+                @endforeach
+            </flux:select>
             <flux:input label="Imagen" placeholder="Imagen" wire:model='imagen'/>
 
             <div class="flex">

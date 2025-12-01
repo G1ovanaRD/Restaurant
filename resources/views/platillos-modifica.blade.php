@@ -6,9 +6,13 @@
     <form method="POST" action="{{ route('platillos.update', $platillo->id) }}">
         @csrf
         <flux:input label="Nombre" placeholder="Nombre" wire:model='nombre' value="{{ $platillo->nombre }}"/>
-        <flux:textarea label="Descripción" placeholder="Descripción" wire:model='descripcion' value="{{ $platillo->descripcion }}"/>
+        <flux:textarea label="Descripción" placeholder="Descripción" wire:model='descripcion'>{{ $platillo->descripcion }}</flux:textarea>
         <flux:input label="Precio" placeholder="Precio" type="number" step="0.01" wire:model='precio' value="{{ $platillo->precio }}"/>
-        <flux:input label="Categoría" placeholder="Categoría" wire:model='categoria' value="{{ $platillo->categoria }}"/>
+        <flux:select label="Categoría" wire:model="categoria">
+            @foreach($categorias as $value => $label)
+                <option value="{{ $value }}" {{ $value == $platillo->categoria ? 'selected' : '' }}>{{ $label }}</option>
+            @endforeach
+        </flux:select>
         <flux:input label="Imagen" placeholder="Imagen" wire:model='imagen' value="{{ $platillo->imagen }}"/>
 
         <div class="flex">
