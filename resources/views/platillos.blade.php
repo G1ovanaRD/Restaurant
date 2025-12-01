@@ -24,7 +24,8 @@
                     <td>{{$platillo->descripcion}}</td>
                     <td>{{$platillo->precio}}</td>
                     <td>{{$platillo->categoria}}</td>
-                    <img src="{{ $platillo->imagen }}" alt="{{ $platillo->nombre }}" style="max-width: 100px; height: auto;"><td>
+                    <td><img src="{{ $platillo->imagen }}" alt="{{ $platillo->nombre }}" style="max-width: 100px; height: auto;"></td>
+                    <td>
                         <form method="POST" action="{{ route('platillos.delete', $platillo->id) }}">
                             @csrf
                             @method('DELETE')

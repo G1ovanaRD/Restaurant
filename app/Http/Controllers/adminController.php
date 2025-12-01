@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Platillo;
 use App\Models\Mesa;
+use App\Models\Reservacion;
+use App\Models\User;
 class adminController extends Controller
 {
     public function platillos() {
@@ -15,6 +17,13 @@ class adminController extends Controller
     public function mesas() {
         $mesas =  Mesa::all();
         return view('mesas', compact('mesas'));
+    }
+
+    public function reservaciones() {
+        $reservacions =  Reservacion::all();
+        $users = User::all();
+        $mesas = Mesa::all();
+        return view('reservaciones', compact('reservacions', 'users', 'mesas'));
     }
 
     public function platilloSave(REQUEST $request) {
@@ -37,6 +46,16 @@ class adminController extends Controller
         return redirect()->back();
     }
 
+    public function reservacionSave(REQUEST $request) {
+        $reservacion = new Reservacion();
+        $reservacion->mesa_id = $request->mesa_id;
+        $reservacion->user_id = $request->user_id;
+        $reservacion->fecha_hora = $request->fecha_hora;
+        $reservacion->numero_personas = $request->numero_personas;
+        $reservacion->save();
+        return redirect()->back();
+    }
+
     public function platilloDelete($id) {
         $platillo = Platillo::find($id);
         $platillo->delete();
@@ -49,6 +68,12 @@ class adminController extends Controller
         return redirect()->back();
     }
 
+    public function reservacionDelete($id) {
+        $reservacion = Reservacion::find($id);
+        $reservacion->delete();
+        return redirect()->back();
+    }
+
     public function platilloShow($id) {
         $platillo = Platillo::find($id);
         return view('platillos-modifica', compact('platillo'));
@@ -57,6 +82,13 @@ class adminController extends Controller
     public function mesaShow($id) {
         $mesa = Mesa::find($id);
         return view('mesas-modifica', compact('mesa'));
+    }
+
+    public function reservacionShow($id) {
+        $reservacion = Reservacion::find($id);
+        $users = User::all();
+        $mesas = Mesa::all();
+        return view('reservaciones-modifica', compact('reservacion', 'users', 'mesas'));
     }
 
     public function platilloUpdate(REQUEST $request, $id) {
@@ -77,5 +109,15 @@ class adminController extends Controller
         $mesa->estado = $request->estado;
         $mesa->save();
         return redirect()->route('mesas.index');
+    }
+
+    public function reservacionUpdate(REQUEST $request, $id) {
+        $reservacion = Reservacion::find($id);
+        $reservacion->mesa_id = $request->mesa_id;
+        $reservacion->user_id = $request->user_id;
+        $reservacion->fecha_hora = $request->fecha_hora;
+        $reservacion->numero_personas = $request->numero_personas;
+        $reservacion->save();
+        return redirect()->route('reservaciones.index');
     }
 }
