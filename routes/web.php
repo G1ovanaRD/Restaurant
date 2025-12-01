@@ -44,4 +44,9 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('mesas/delete/{id}', [adminController::class, 'mesaDelete'])->name('mesas.delete');
     Route::get('mesas/show/{id}', [adminController::class, 'mesaShow'])->name('mesas.show');
     Route::post('mesas/update/{id}', [adminController::class, 'mesaUpdate'])->name('mesas.update');
+    Route::get('reservaciones', [adminController::class, 'reservaciones'])->name('reservaciones.index');
+    Route::post('reservaciones/save', [adminController::class, 'reservacionSave'])->name('reservaciones.save');
+    Route::delete('reservaciones/delete/{id}', [adminController::class, 'reservacionDelete'])->name('reservaciones.delete');
+    Route::get('reservaciones/show/{id}', [adminController::class, 'reservacionShow'])->name('reservaciones.show');
+    Route::post('reservaciones/update/{id}', [adminController::class, 'reservacionUpdate'])->name('reservaciones.update');
 });

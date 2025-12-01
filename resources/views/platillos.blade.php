@@ -24,7 +24,7 @@
                     <td>{{$platillo->descripcion}}</td>
                     <td>{{$platillo->precio}}</td>
                     <td>{{$platillo->categoria}}</td>
-                    <td>{{$platillo->imagen}}</td>
+                    <td><img src="{{ $platillo->imagen }}" alt="{{ $platillo->nombre }}" style="max-width: 100px; height: auto;"></td>
                     <td>
                         <form method="POST" action="{{ route('platillos.delete', $platillo->id) }}">
                             @csrf
@@ -48,8 +48,8 @@
         <form method="POST" action="{{ route('platillos.save') }}">
             @csrf
             <flux:input label="Nombre" placeholder="Nombre" wire:model='nombre'/>
-            <flux:input label="Descripcion" placeholder="Descripción" wire:model='descripcion'/>
-            <flux:input label="Precio" placeholder="Precio" wire:model='precio'/>
+            <flux:textarea label="Descripcion" placeholder="Descripción" wire:model='descripcion'/>
+            <flux:input label="Precio" placeholder="Precio" type="number" step="0.01" wire:model='precio'/>
             <flux:input label="Categoría" placeholder="Categoría" wire:model='categoria'/>
             <flux:input label="Imagen" placeholder="Imagen" wire:model='imagen'/>
 
