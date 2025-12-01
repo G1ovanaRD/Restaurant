@@ -9,6 +9,11 @@ use App\Models\Reservacion;
 use App\Models\User;
 class adminController extends Controller
 {
+
+    public function carrusel(){
+        $platillos= Platillo::all();
+        return view('dashboard', compact('platillos'));
+    }
     private $categorias = [
         "Comida rápida" => "Comida rápida",
         "Comida italiana" => "Comida italiana",
