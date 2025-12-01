@@ -9,9 +9,45 @@ use App\Models\Reservacion;
 use App\Models\User;
 class adminController extends Controller
 {
+    private $categorias = [
+        "Comida rápida" => "Comida rápida",
+        "Comida italiana" => "Comida italiana",
+        "Comida mexicana" => "Comida mexicana",
+        "Comida japonesa" => "Comida japonesa",
+        "Comida china" => "Comida china",
+        "Comida francesa" => "Comida francesa",
+        "Comida mediterránea" => "Comida mediterránea",
+        "Comida española" => "Comida española",
+        "Comida americana" => "Comida americana",
+        "Comida india" => "Comida india",
+        "Comida tailandesa" => "Comida tailandesa",
+        "Comida árabe" => "Comida árabe",
+        "Comida griega" => "Comida griega",
+        "Comida vegetariana" => "Comida vegetariana",
+        "Comida vegana" => "Comida vegana",
+        "Comida saludable" => "Comida saludable",
+        "Comida gourmet" => "Comida gourmet",
+        "Comida casera" => "Comida casera",
+        "Comida coreana" => "Comida coreana",
+        "Comida peruana" => "Comida peruana",
+        "Comida colombiana" => "Comida colombiana",
+        "Comida argentina" => "Comida argentina",
+        "Mariscos" => "Mariscos",
+        "Parrilladas / BBQ" => "Parrilladas / BBQ",
+        "Postres" => "Postres",
+        "Panadería / Repostería" => "Panadería / Repostería",
+        "Cafetería / Coffee shop" => "Cafetería / Coffee shop",
+        "Sushi" => "Sushi",
+        "Pizzería" => "Pizzería",
+        "Hamburguesas" => "Hamburguesas",
+        "Tacos" => "Tacos",
+        "Antojitos mexicanos" => "Antojitos mexicanos",
+    ];
+
     public function platillos() {
         $platillos =  Platillo::all();
-        return view('platillos', compact('platillos'));
+        $categorias = $this->categorias;
+        return view('platillos', compact('platillos', 'categorias'));
     }
 
     public function mesas() {
@@ -76,7 +112,8 @@ class adminController extends Controller
 
     public function platilloShow($id) {
         $platillo = Platillo::find($id);
-        return view('platillos-modifica', compact('platillo'));
+        $categorias = $this->categorias;
+        return view('platillos-modifica', compact('platillo', 'categorias'));
     }
 
     public function mesaShow($id) {

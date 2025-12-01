@@ -51,39 +51,10 @@
             <flux:input label="Nombre" placeholder="Nombre" wire:model='nombre'/>
             <flux:textarea label="Descripcion" placeholder="Descripción" wire:model='descripcion'/>
             <flux:input label="Precio" placeholder="Precio" type="number" step="0.01" wire:model='precio'/>
-            <flux:select label="Categoría" placeholder="Selecciona una categoría" wire:model="categoria">
-                <flux:select.option value="comida_rapida">Comida rápida</flux:select.option>
-                <flux:select.option value="italiana">Comida italiana</flux:select.option>
-                <flux:select.option value="mexicana">Comida mexicana</flux:select.option>
-                <flux:select.option value="japonesa">Comida japonesa</flux:select.option>
-                <flux:select.option value="china">Comida china</flux:select.option>
-                <flux:select.option value="francesa">Comida francesa</flux:select.option>
-                <flux:select.option value="mediterranea">Comida mediterránea</flux:select.option>
-                <flux:select.option value="espanola">Comida española</flux:select.option>
-                <flux:select.option value="americana">Comida americana</flux:select.option>
-                <flux:select.option value="india">Comida india</flux:select.option>
-                <flux:select.option value="tailandesa">Comida tailandesa</flux:select.option>
-                <flux:select.option value="arabe">Comida árabe</flux:select.option>
-                <flux:select.option value="griega">Comida griega</flux:select.option>
-                <flux:select.option value="vegetariana">Comida vegetariana</flux:select.option>
-                <flux:select.option value="vegana">Comida vegana</flux:select.option>
-                <flux:select.option value="saludable">Comida saludable</flux:select.option>
-                <flux:select.option value="gourmet">Comida gourmet</flux:select.option>
-                <flux:select.option value="casera">Comida casera</flux:select.option>
-                <flux:select.option value="coreana">Comida coreana</flux:select.option>
-                <flux:select.option value="peruana">Comida peruana</flux:select.option>
-                <flux:select.option value="colombiana">Comida colombiana</flux:select.option>
-                <flux:select.option value="argentina">Comida argentina</flux:select.option>
-                <flux:select.option value="mariscos">Mariscos</flux:select.option>
-                <flux:select.option value="bbq">Parrilladas / BBQ</flux:select.option>
-                <flux:select.option value="postres">Postres</flux:select.option>
-                <flux:select.option value="panaderia">Panadería / Repostería</flux:select.option>
-                <flux:select.option value="cafeteria">Cafetería / Coffee shop</flux:select.option>
-                <flux:select.option value="sushi">Sushi</flux:select.option>
-                <flux:select.option value="pizzeria">Pizzería</flux:select.option>
-                <flux:select.option value="hamburguesas">Hamburguesas</flux:select.option>
-                <flux:select.option value="tacos">Tacos</flux:select.option>
-                <flux:select.option value="antojitos">Antojitos mexicanos</flux:select.option>
+            <flux:select label="Categoría" wire:model="categoria">
+                @foreach($categorias as $value => $label)
+                    <option value="{{ $value }}">{{ $label }}</option>
+                @endforeach
             </flux:select>
             <flux:input label="Imagen" placeholder="Imagen" wire:model='imagen'/>
 
