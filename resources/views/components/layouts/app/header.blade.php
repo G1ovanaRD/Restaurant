@@ -21,6 +21,9 @@
                 <flux:navbar.item icon="layout-grid" :href="route('mesas.index')" :current="request()->routeIs('mesas.index')" wire:navigate>
                     {{ __('Mesas') }}
                 </flux:navbar.item>
+                <flux:navbar.item icon="layout-grid" :href="route('reservaciones.index')" :current="request()->routeIs('reservaciones.index')" wire:navigate>
+                    {{ __('Reservar') }}
+                </flux:navbar.item>
             </flux:navbar>
 
             <flux:spacer />

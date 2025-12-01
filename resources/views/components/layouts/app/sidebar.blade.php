@@ -15,7 +15,7 @@
                 <flux:navlist.group :heading="__('Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
                     <flux:navlist.item icon="home" :href="route('platillos.index')" :current="request()->routeIs('platillos.index')" wire:navigate>{{ __('Platillos') }}</flux:navlist.item>
-                    <flux:navlist.item icon="home" :href="route('platillos.index')" :current="request()->routeIs('platillos.index')" wire:navigate>{{ __('Mesas') }}</flux:navlist.item>
+                    <flux:navlist.item icon="home" :href="route('mesas.index')" :current="request()->routeIs('mesas.index')" wire:navigate>{{ __('Mesas') }}</flux:navlist.item>
                     <flux:navlist.item icon="home" :href="route('reservaciones.index')" :current="request()->routeIs('reservaciones.index')" wire:navigate>{{ __('Reservar') }}</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>

@@ -60,7 +60,7 @@
             <flux:select label="Cliente" wire:model="user_id">
                 <option value="" disabled selected>Seleccione un cliente</option>
                 @foreach($users as $user)
-                    <option value="{{ $user->id }}">{{$ user->name }}</option>
+                    <option value="{{ $user->id }}">{{ $user->name }}</option>
                 @endforeach
             </flux:select>
             <flux:input label="Fecha y hora" placeholder="Fecha y hora" type="datetime-local" wire:model='fecha_hora'/>

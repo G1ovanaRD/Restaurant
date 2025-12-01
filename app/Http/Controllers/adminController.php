@@ -20,10 +20,10 @@ class adminController extends Controller
     }
 
     public function reservaciones() {
-        $reservacions =  Reservacion::all();
+        $reservaciones =  Reservacion::all();
         $users = User::all();
         $mesas = Mesa::all();
-        return view('reservaciones', compact('reservacions', 'users', 'mesas'));
+        return view('reservaciones', compact('reservaciones', 'users', 'mesas'));
     }
 
     public function platilloSave(REQUEST $request) {
