@@ -9,6 +9,12 @@ use App\Models\Reservacion;
 use App\Models\User;
 class adminController extends Controller
 {
+
+    public function carrusel(){
+        $platillos= Platillo::all();
+        return view('dashboard', compact('platillos'));
+    }
+
     public function platillos() {
         $platillos =  Platillo::all();
         return view('platillos', compact('platillos'));

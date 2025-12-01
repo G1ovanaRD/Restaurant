@@ -10,7 +10,8 @@
             <a href="{{ route('dashboard') }}" class="ms-2 me-5 flex items-center space-x-2 rtl:space-x-reverse lg:ms-0" wire:navigate>
                 <x-app-logo />
             </a>
-
+            <flux:spacer />
+            
             <flux:navbar class="-mb-px max-lg:hidden">
                 <flux:navbar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                     {{ __('Home') }}
@@ -21,7 +22,7 @@
                 <flux:navbar.item icon="utensils" :href="route('mesas.index')" :current="request()->routeIs('mesas.index')" wire:navigate>
                     {{ __('Mesas') }}
                 </flux:navbar.item>
-                <flux:navbar.item icon="layout-grid" :href="route('reservaciones.index')" :current="request()->routeIs('reservaciones.index')" wire:navigate>
+                <flux:navbar.item icon="clock" :href="route('reservaciones.index')" :current="request()->routeIs('reservaciones.index')" wire:navigate>
                     {{ __('Reservar') }}
                 </flux:navbar.item>
             </flux:navbar>
