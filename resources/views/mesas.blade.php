@@ -39,7 +39,7 @@
                                     <form method="POST" action="{{ route('mesas.delete', $mesa->id) }}">
                                         @csrf
                                         @method('DELETE')
-                                    <flux:button href="{{ route('mesas.show', $mesa->id) }}" icon="trash" class="bg-black-food [&_svg]:text-white" size="sm"></flux:button>
+                                    <flux:button type="submit" icon="trash" class="bg-black-food [&_svg]:text-white" size="sm"></flux:button>
                                     </form>
                                 </div>
                             </td>

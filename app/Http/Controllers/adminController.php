@@ -66,6 +66,12 @@ class adminController extends Controller
         return view('reservaciones', compact('reservaciones', 'users', 'mesas'));
     }
 
+    public function reservacionesCliente($id) {
+        $reservaciones = Reservacion::where('user_id', $id)->get();
+        $mesas = Mesa::all();
+        return view('reservaciones-cliente', compact('reservaciones', 'mesas'));
+    }
+
     public function platilloSave(REQUEST $request) {
         $platillo = new Platillo();
         $platillo->nombre = $request->nombre;
@@ -165,6 +171,16 @@ class adminController extends Controller
         return redirect()->back()->with('status', 'Reservación creada correctamente');
     }
 
+    public function reservacionClienteSave(REQUEST $request, $id) {
+        $reservacion = new Reservacion();
+        $reservacion->mesa_id = $request->mesa_id;
+        $reservacion->user_id = $id;
+        $reservacion->fecha_hora = $request->fecha_hora;
+        $reservacion->numero_personas = $request->numero_personas;
+        $reservacion->save();
+        return redirect()->back();
+    }
+
     public function platilloDelete($id) {
         $platillo = Platillo::find($id);
         $platillo->delete();
@@ -209,6 +225,12 @@ class adminController extends Controller
         $users = User::all();
         $mesas = Mesa::all();
         return view('reservaciones-modifica', compact('reservacion', 'users', 'mesas'));
+    }
+
+    public function reservacionClienteShow($id) {
+        $reservacion = Reservacion::find($id);
+        $mesas = Mesa::all();
+        return view('reservacionesCliente-modifica', compact('reservacion', 'mesas'));
     }
 
     public function platilloUpdate(REQUEST $request, $id) {
@@ -271,5 +293,15 @@ class adminController extends Controller
         }
 
         return redirect()->route('reservaciones.index');
+    }
+
+    public function reservacionClienteUpdate(REQUEST $request, $id_user, $id) {
+        $reservacion = Reservacion::find($id);
+        $reservacion->mesa_id = $request->mesa_id;
+        $reservacion->user_id = $id_user;
+        $reservacion->fecha_hora = $request->fecha_hora;
+        $reservacion->numero_personas = $request->numero_personas;
+        $reservacion->save();
+        return redirect()->route('reservacionesCliente.index', $id_user);
     }
 }
