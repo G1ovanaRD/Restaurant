@@ -6,15 +6,18 @@
                 <form method="POST" action="{{ route('platillos.importar') }}" enctype="multipart/form-data" class="flex items-center gap-2 w-full md:w-auto">
                     @csrf
                     <input type="file" name="file" accept=".xlsx,.xls,.csv" class="block text-sm text-gray-500 max-w-[150px] md:max-w-none truncate" />
-                    <flux:button type="submit" icon="import" class="bg-black-food [&_svg]:text-white hover:!bg-zinc-700 transition-colors cursor-pointer flex-shrink-0"></flux:button>
+                    <flux:button type="submit" icon="import" title="Subir excel" class="bg-black-food [&_svg]:text-white hover:!bg-zinc-700 transition-colors cursor-pointer flex-shrink-0"></flux:button>
                 </form>
 
                 <form method="GET" action="{{ route('platillos.export') }}">
-                    <flux:button type="submit" icon="export" class="bg-black-food [&_svg]:text-white hover:!bg-zinc-700 transition-colors cursor-pointer"></flux:button>
+                    <flux:button type="submit" icon="export" title="Descargar excel" class="bg-black-food [&_svg]:text-white hover:!bg-zinc-700 transition-colors cursor-pointer"></flux:button>
                 </form>
+                
+                {{-- AQUI AGREGAN LA FUNCIONALIDAD DE DESCARGAR EL MENU --}}
+                <flux:button icon="download" title="Descargar menú" class="bg-green-600 [&_svg]:text-white hover:!bg-green-700 transition-colors cursor-pointer"/>
 
                 <flux:modal.trigger name="edit-platillo">
-                    <flux:button icon="plus" class="bg-black-food [&_svg]:text-white hover:!bg-zinc-700 transition-colors cursor-pointer"/>
+                    <flux:button icon="plus" title="Agregar platillo" class="bg-black-food [&_svg]:text-white hover:!bg-zinc-700 transition-colors cursor-pointer"/>
                 </flux:modal.trigger>
             </div>
         </div>
