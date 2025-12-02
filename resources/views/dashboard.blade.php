@@ -49,22 +49,7 @@
             
             <div class="relative overflow-hidden">
                 <div id="carrusel-container" class="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scroll-smooth scrollbar-hide">
-                    @foreach($platillos as $platillo)
-                    <div class="flex-none w-80 snap-start">
-                        <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-lg overflow-hidden border border-zinc-200 dark:border-zinc-700 hover:shadow-xl transition-shadow">
-                            <img src="{{ $platillo->imagen }}" alt="{{ $platillo->nombre }}" class="w-full h-48 object-cover">
-                            
-                            <div class="p-4 space-y-3">
-                                <div>
-                                    <flux:heading size="lg">{{ $platillo->nombre }}</flux:heading>
-                                    <flux:badge size="sm" color="lime" class="mt-1 text-black">{{ $platillo->categoria }}</flux:badge>
-                                </div>
-                                <flux:text class="line-clamp-1">{{ $platillo->descripcion }}</flux:text>
-                                
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
+                    <!-- Los platillos se cargarán dinámicamente desde la API -->
                 </div>
             </div>
         </div>
@@ -89,6 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const scrollRight = document.getElementById('scroll-right');
     const scrollAmount = 350;
     
+    // Botones de scroll
     scrollLeft.addEventListener('click', function(e) {
         e.preventDefault();
         container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
@@ -98,5 +84,35 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     });
+    
+    // Cargar platillos desde la API
+    fetch('http://localhost:8001/api/platillo')
+        .then(response => response.json())
+        .then(data => {
+            // Tomar solo los primeros 5 registros
+            const platillos = data.slice(0, 5);
+            
+            // Renderizar los platillos
+            container.innerHTML = platillos.map(platillo => `
+                <div class="flex-none w-80 snap-start">
+                    <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-lg overflow-hidden border border-zinc-200 dark:border-zinc-700 hover:shadow-xl transition-shadow">
+                        <img src="${platillo.imagen}" alt="${platillo.nombre}" class="w-full h-48 object-cover">
+                        
+                        <div class="p-4 space-y-3">
+                            <div>
+                                <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">${platillo.nombre}</h3>
+                                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-lime-100 text-black dark:bg-lime-900 dark:text-lime-100 mt-1">${platillo.categoria}</span>
+                            </div>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">${platillo.descripcion}</p>
+                            <p class="text-lg font-bold text-green-600 dark:text-green-food">$${platillo.precio}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        })
+        .catch(error => {
+            console.error('Error al cargar los platillos:', error);
+            container.innerHTML = '<p class="text-red-500">Error al cargar los platillos</p>';
+        });
 });
 </script>
