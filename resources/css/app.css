@@ -64,6 +64,10 @@
     .bg-green-600{
         background-color: var(--green-600);
     }
+
+    .text-green-700{
+        color: var(--green-700);
+    }
 }
 
 @layer theme {

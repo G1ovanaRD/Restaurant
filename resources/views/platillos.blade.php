@@ -1,20 +1,20 @@
 <x-layouts.app>
     <div class="space-y-6">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <h2 class="text-3xl font-bold">Platillos</h2>
-            <div class="flex items-center gap-3">
-                <form method="POST" action="{{ route('platillos.importar') }}" enctype="multipart/form-data" class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                <form method="POST" action="{{ route('platillos.importar') }}" enctype="multipart/form-data" class="flex items-center gap-2 w-full md:w-auto">
                     @csrf
-                    <input type="file" name="file" accept=".xlsx,.xls,.csv" class="block text-sm text-gray-500" />
-                    <flux:button type="submit" icon="import" class="bg-green-600 [&_svg]:text-white hover:bg-green-700 transition-colors"></flux:button>
+                    <input type="file" name="file" accept=".xlsx,.xls,.csv" class="block text-sm text-gray-500 max-w-[150px] md:max-w-none truncate" />
+                    <flux:button type="submit" icon="import" class="bg-black-food [&_svg]:text-white hover:!bg-zinc-700 transition-colors cursor-pointer flex-shrink-0"></flux:button>
                 </form>
 
-                <a href="{{ route('platillos.export') }}" class="inline-flex items-center gap-2 rounded-lg bg-green-600 p-2 text-sm font-medium text-white hover:bg-green-700 transition-colors">
-                    <flux:icon.export class="w-5 h-5" />
-                </a>
+                <form method="GET" action="{{ route('platillos.export') }}">
+                    <flux:button type="submit" icon="export" class="bg-black-food [&_svg]:text-white hover:!bg-zinc-700 transition-colors cursor-pointer"></flux:button>
+                </form>
 
                 <flux:modal.trigger name="edit-platillo">
-                    <flux:button icon="plus" class="bg-black-food [&_svg]:text-white hover:bg-zinc-700 transition-colors"/>
+                    <flux:button icon="plus" class="bg-black-food [&_svg]:text-white hover:!bg-zinc-700 transition-colors cursor-pointer"/>
                 </flux:modal.trigger>
             </div>
         </div>
@@ -25,26 +25,22 @@
                     <div class="bg-white dark:bg-zinc-900 rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-700 cursor-pointer shadow hover:shadow-xl transition-shadow">
                         <img src="{{ $platillo->imagen }}" alt="{{ $platillo->nombre }}" class="w-full h-60 object-cover">
                         
-                        <div class="p-4 space-y-3">
+                        <div class="p-4 space-y-2">
                             <div>
-                                <flux:heading size="lg">{{ $platillo->nombre }}</flux:heading>
-                                <flux:badge size="sm" class="mt-1 bg-green-food text-white">{{ $platillo->categoria }}</flux:badge>
+                                <flux:heading size="xl">{{ $platillo->nombre }}</flux:heading>
+                                <flux:badge size="sm" color="lime" class="mt-1 text-black">{{ $platillo->categoria }}</flux:badge>
                             </div>
                             
                             <flux:text class="line-clamp-2">{{ $platillo->descripcion }}</flux:text>
                             
-                            <flux:heading size="xl" class="text-green-food">${{ number_format($platillo->precio, 2) }}</flux:heading>
+                            <flux:heading size="lg" class="text-green-700">${{ number_format($platillo->precio, 2) }}</flux:heading>
                             
-                            <div class="flex gap-2 pt-2">
-                                <flux:button href="{{ route('platillos.show', $platillo->id) }}" variant="ghost" size="sm" class="flex-1">
-                                    Editar
-                                </flux:button>
+                            <div class="flex gap-2 pt-2 items-end justify-self-end">
+                                <flux:button href="{{ route('platillos.show', $platillo->id) }}" icon="pencil" class="bg-green-food [&_svg]:text-black hover:!bg-green-600 transition-colors" size="sm"></flux:button>
                                 <form method="POST" action="{{ route('platillos.delete', $platillo->id) }}" class="flex-1">
                                     @csrf
                                     @method('DELETE')
-                                    <flux:button type="submit" variant="danger" size="sm" class="w-full cursor-pointer">
-                                        Eliminar
-                                    </flux:button>
+                                    <flux:button type="submit" icon="trash" class="bg-black-food [&_svg]:text-white cursor-pointer hover:!bg-zinc-700 transition-colors" size="sm"></flux:button>
                                 </form>
                             </div>
                         </div>
