@@ -1,63 +1,59 @@
 <x-layouts.app>
-    <div class="max-w-7xl mx-auto p-6">
-        <div class="flex items-center justify-between mb-6">
-            <h1 class="text-2xl font-semibold">Reservaciones</h1>
-            <div>
-                <flux:modal.trigger name="edit-reservacion">
-                    <flux:button variant="primary">Agregar reservación</flux:button>
-                </flux:modal.trigger>
-            </div>
+    <div class="space-y-6">
+        <div class="flex items-center justify-between">
+            <h2 class="text-3xl font-bold">Reservaciones</h2>
+            <flux:modal.trigger name="edit-reservacion">
+                <flux:button icon="plus" class="bg-black-food [&_svg]:text-white hover:!bg-zinc-700 transition-colors"/>
+            </flux:modal.trigger>
         </div>
 
         @if(session('status'))
-            <div class="mb-4 p-3 bg-green-50 text-green-800 rounded">{{ session('status') }}</div>
+            <div class="p-3 bg-green-50 text-green-800 rounded">{{ session('status') }}</div>
         @endif
         @if(session('error'))
-            <div class="mb-4 p-3 bg-red-50 text-red-800 rounded">{{ session('error') }}</div>
+            <div class="p-3 bg-red-50 text-red-800 rounded">{{ session('error') }}</div>
         @endif
+        
         @if(isset($weather) && $weather)
-            <div class="mb-6 bg-white shadow-sm rounded-lg p-4 flex items-center gap-4">
-                <div class="text-sm text-gray-600">Clima en <span class="font-medium">{{ $weather_city ?? ($weather['name'] ?? '') }}</span></div>
-                <div class="text-sm text-gray-700">{{ $weather['weather'][0]['description'] ?? '' }}</div>
+            <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-sm p-4 flex items-center gap-4 border border-zinc-200 dark:border-zinc-700">
+                <div class="text-sm text-zinc-600 dark:text-zinc-400">Clima en <span class="font-medium">{{ $weather_city ?? ($weather['name'] ?? '') }}</span></div>
+                <div class="text-sm text-zinc-700 dark:text-zinc-300">{{ $weather['weather'][0]['description'] ?? '' }}</div>
                 <div class="text-lg font-semibold ml-auto">{{ $weather['main']['temp'] ?? '' }} °C</div>
             </div>
         @endif
 
-        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-            <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-                <div class="text-sm text-gray-700">Listado de reservaciones ({{ $reservaciones->count() }})</div>
-            </div>
+        <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-lg overflow-hidden border border-zinc-200 dark:border-zinc-700">
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 table-auto">
-                    <thead class="bg-gray-50">
+                <table class="w-full">
+                    <thead class="bg-zinc-50 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700">
                         <tr>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">#</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mesa</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha y hora</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Personas</th>
-                            <th class="px-4 py-3"></th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">ID</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">Mesa</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">Cliente</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">Fecha y hora</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">Personas</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-100">
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
                         @foreach($reservaciones as $reservacion)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-3 text-sm text-gray-700">{{ $reservacion->id }}</td>
-                            <td class="px-4 py-3 text-sm text-gray-700">Mesa {{ $reservacion->mesa_id }}</td>
-                            <td class="px-4 py-3 text-sm text-gray-700">
+                        <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
+                            <td class="px-6 py-4 text-sm text-zinc-900 dark:text-zinc-100">{{ $reservacion->id }}</td>
+                            <td class="px-6 py-4 text-sm text-zinc-900 dark:text-zinc-100"> {{ $reservacion->mesa_id }}</td>
+                            <td class="px-6 py-4 text-sm text-zinc-900 dark:text-zinc-100">
                                 @php $cliente = $users->firstWhere('id', $reservacion->user_id); @endphp
                                 {{ $cliente?->name ?? '—' }}
                             </td>
-                            <td class="px-4 py-3 text-sm text-gray-700">{{ $reservacion->fecha_hora }}</td>
-                            <td class="px-4 py-3 text-sm text-gray-700">{{ $reservacion->numero_personas }}</td>
-                            <td class="px-4 py-3 text-sm text-gray-700">
-                                <div class="flex items-center gap-2">
+                            <td class="px-6 py-4 text-sm text-zinc-900 dark:text-zinc-100">{{ $reservacion->fecha_hora }}</td>
+                            <td class="px-6 py-4 text-sm text-zinc-900 dark:text-zinc-100">{{ $reservacion->numero_personas }} personas</td>
+                            <td class="px-6 py-4 text-sm">
+                                <div class="flex gap-2">
+                                    <flux:button href="{{ route('reservaciones.show', $reservacion->id) }}" icon="pencil" class="bg-green-food [&_svg]:text-black hover:!bg-green-600 transition-colors" size="sm"></flux:button>
                                     <form method="POST" action="{{ route('reservaciones.delete', $reservacion->id) }}">
                                         @csrf
                                         @method('DELETE')
-                                        <flux:button type="submit" variant="danger">Eliminar</flux:button>
+                                        <flux:button type="submit" icon="trash" class="bg-black-food [&_svg]:text-white hover:!bg-zinc-700 transition-colors" size="sm"></flux:button>
                                     </form>
-                                    <flux:brand href="{{ route('reservaciones.show', $reservacion->id) }}" name="Modificar" />
                                 </div>
                             </td>
                         </tr>
@@ -66,6 +62,7 @@
                 </table>
             </div>
         </div>
+    </div>
 
         <flux:modal name="edit-reservacion" class="md:w-96">
             <div class="space-y-6">

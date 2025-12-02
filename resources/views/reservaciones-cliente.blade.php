@@ -1,7 +1,7 @@
 <x-layouts.app>
     <div class="space-y-6">
         <div class="flex items-center justify-between">
-            <h2 class="text-3xl font-bold">Reservaciones activas</h2>
+            <h2 class="text-3xl font-bold">Reservaciones</h2>
             <flux:modal.trigger name="edit-reservacion">
                 <flux:button icon="plus" class="bg-black-food [&_svg]:text-white hover:bg-zinc-700 transition-colors"/>
             </flux:modal.trigger>
