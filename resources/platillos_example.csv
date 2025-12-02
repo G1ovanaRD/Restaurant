@@ -1,0 +1,6 @@
+nombre,descripcion,precio,categoria,imagen
+Tacos al Pastor,"Tacos de cerdo adobado, servidos con piña y cilantro",85.00,Tacos,https://ejemplo.com/imagenes/tacos_pastor.jpg
+Pizza Margherita,"Base de tomate, mozzarella fresca y albahaca",150.50,Pizzería,https://ejemplo.com/imagenes/pizza_margherita.jpg
+Sushi Roll","Roll de salmón y aguacate, 8 piezas",220.00,Sushi,https://ejemplo.com/imagenes/sushi_roll.jpg
+Ensalada César,"Lechuga romana, aderezo César, crutones y queso parmesano",95.25,Comida saludable,https://ejemplo.com/imagenes/ensalada_cesar.jpg
+Brownie de Chocolate,"Brownie casero con nueces y salsa de chocolate",60.00,Postres,https://ejemplo.com/imagenes/brownie.jpg

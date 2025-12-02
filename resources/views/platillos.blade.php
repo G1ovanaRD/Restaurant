@@ -2,9 +2,22 @@
     <div class="space-y-6">
         <div class="flex items-center justify-between">
             <h2 class="text-3xl font-bold">Platillos</h2>
-            <flux:modal.trigger name="edit-platillo">
-                <flux:button>Agregar Platillo</flux:button>
-            </flux:modal.trigger>
+            <div class="flex items-center gap-3">
+                <form method="POST" action="{{ route('platillos.importar') }}" enctype="multipart/form-data" class="flex items-center gap-2">
+                    @csrf
+                    <label class="text-sm text-gray-600">Importar Excel</label>
+                    <input type="file" name="file" accept=".xlsx,.xls,.csv" class="block" />
+                    <flux:button type="submit" variant="primary" size="sm">Importar</flux:button>
+                </form>
+
+                <a href="{{ route('platillos.export') }}" class="inline-flex items-center gap-2 rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700">
+                    Exportar Excel
+                </a>
+
+                <flux:modal.trigger name="edit-platillo">
+                    <flux:button>Agregar Platillo</flux:button>
+                </flux:modal.trigger>
+            </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -42,6 +55,12 @@
 
 <flux:modal name="edit-platillo" class="md:w-96">
     <div class="space-y-6">
+        @if(session('status'))
+            <div class="p-3 bg-green-50 text-green-800 rounded">{{ session('status') }}</div>
+        @endif
+        @if(session('error'))
+            <div class="p-3 bg-red-50 text-red-800 rounded">{{ session('error') }}</div>
+        @endif
         <div>
             <flux:heading size="lg">Agregar platillos</flux:heading>
             <flux:text class="mt-2">Agrega un platillo nuevo</flux:text>

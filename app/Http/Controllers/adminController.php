@@ -7,6 +7,9 @@ use App\Models\Platillo;
 use App\Models\Mesa;
 use App\Models\Reservacion;
 use App\Models\User;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PlatillosExport;
+use App\Imports\PlatillosImport;
 class adminController extends Controller
 {
 
@@ -74,6 +77,54 @@ class adminController extends Controller
         return redirect()->back();
     }
 
+    
+    public function platillosExport()
+    {
+        $fileName = 'platillos_' . date('Ymd_His') . '.xlsx';
+        return Excel::download(new PlatillosExport(), $fileName);
+    }
+
+    public function platillosImportar(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv|max:10240',
+        ], [
+            'file.required' => 'Seleccione un archivo Excel para importar.',
+            'file.mimes' => 'El archivo debe ser .xlsx, .xls o .csv.',
+            'file.max' => 'El archivo es demasiado grande (máx 10MB).',
+        ]);
+
+        $import = new PlatillosImport();
+
+        try {
+            $import->import($request->file('file'));
+        } catch (\Exception $e) {
+            \Log::error('Error importando platillos', ['error' => $e->getMessage()]);
+            return redirect()->back()->with('error', 'Error al importar el archivo: ' . $e->getMessage());
+        }
+
+        $creados = $import->creados ?? 0;
+        $actualizados = $import->actualizados ?? 0;
+        $fallos = $import->failures() ?? [];
+        $nFallos = count($fallos);
+
+        if ($nFallos) {
+            foreach ($fallos as $f) {
+                \Log::warning('Fila fallida al importar platillos', [
+                    'row' => $f->row(),
+                    'attribute' => $f->attribute(),
+                    'errors' => $f->errors(),
+                    'values' => $f->values(),
+                ]);
+            }
+        }
+
+        $msg = "Importación completada: creados={$creados}, actualizados={$actualizados}";
+        if ($nFallos) $msg .= ", fallos={$nFallos} (revisar logs)";
+
+        return redirect()->back()->with('status', $msg);
+    }
+
     public function mesaSave(REQUEST $request) {
         $mesa = new Mesa();
         $mesa->capacidad = $request->capacidad;
@@ -84,13 +135,34 @@ class adminController extends Controller
     }
 
     public function reservacionSave(REQUEST $request) {
+        $validated = $request->validate([
+            'mesa_id' => 'required|exists:mesas,id',
+            'user_id' => 'required|exists:users,id',
+            'fecha_hora' => 'required|date',
+            'numero_personas' => 'required|integer|min:1',
+        ]);
+
+        // se verifica que la mesa no esté ocupada
+        $mesa = Mesa::find($validated['mesa_id']);
+        if ($mesa && ($mesa->estado === 'ocupado' || strtolower($mesa->estado) === 'ocupado')) {
+            return redirect()->back()->with('error', 'La mesa seleccionada ya está ocupada. Elige otra mesa.');
+        }
+
         $reservacion = new Reservacion();
-        $reservacion->mesa_id = $request->mesa_id;
-        $reservacion->user_id = $request->user_id;
-        $reservacion->fecha_hora = $request->fecha_hora;
-        $reservacion->numero_personas = $request->numero_personas;
+        $reservacion->mesa_id = $validated['mesa_id'];
+        $reservacion->user_id = $validated['user_id'];
+        $reservacion->fecha_hora = $validated['fecha_hora'];
+        $reservacion->numero_personas = $validated['numero_personas'];
         $reservacion->save();
-        return redirect()->back();
+
+        // cambiar la mesa a ocupada
+        $mesa = Mesa::find($validated['mesa_id']);
+        if ($mesa) {
+            $mesa->estado = 'ocupado';
+            $mesa->save();
+        }
+
+        return redirect()->back()->with('status', 'Reservación creada correctamente');
     }
 
     public function platilloDelete($id) {
@@ -107,7 +179,17 @@ class adminController extends Controller
 
     public function reservacionDelete($id) {
         $reservacion = Reservacion::find($id);
-        $reservacion->delete();
+        if ($reservacion) {
+            // Liberar la mesa asociada
+            $mesa = Mesa::find($reservacion->mesa_id);
+            if ($mesa) {
+                $mesa->estado = 'disponible';
+                $mesa->save();
+            }
+
+            $reservacion->delete();
+        }
+
         return redirect()->back();
     }
 
@@ -151,11 +233,43 @@ class adminController extends Controller
 
     public function reservacionUpdate(REQUEST $request, $id) {
         $reservacion = Reservacion::find($id);
-        $reservacion->mesa_id = $request->mesa_id;
+
+        if (!$reservacion) return redirect()->route('reservaciones.index');
+
+        $oldMesaId = $reservacion->mesa_id;
+        $newMesaId = $request->mesa_id;
+
+        // verificar si la nueva mesa está ocupada
+        if ($newMesaId && $oldMesaId != $newMesaId) {
+            $newMesa = Mesa::find($newMesaId);
+            if ($newMesa && ($newMesa->estado === 'ocupado' || strtolower($newMesa->estado) === 'ocupado')) {
+                return redirect()->back()->with('error', 'La mesa seleccionada ya está ocupada. Elige otra mesa.');
+            }
+        }
+
+        $reservacion->mesa_id = $newMesaId;
         $reservacion->user_id = $request->user_id;
         $reservacion->fecha_hora = $request->fecha_hora;
         $reservacion->numero_personas = $request->numero_personas;
         $reservacion->save();
+
+        // actualizar estados de las mesas si se cambió la mesa
+        if ($oldMesaId && $oldMesaId != $newMesaId) {
+            $oldMesa = Mesa::find($oldMesaId);
+            if ($oldMesa) {
+                $oldMesa->estado = 'disponible';
+                $oldMesa->save();
+            }
+        }
+
+        if ($newMesaId) {
+            $newMesa = Mesa::find($newMesaId);
+            if ($newMesa) {
+                $newMesa->estado = 'ocupado';
+                $newMesa->save();
+            }
+        }
+
         return redirect()->route('reservaciones.index');
     }
 }
