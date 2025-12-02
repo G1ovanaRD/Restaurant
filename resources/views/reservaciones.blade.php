@@ -49,6 +49,7 @@
                             <td class="px-6 py-4 text-sm">
                                 <div class="flex gap-2">
                                     <flux:button href="{{ route('reservaciones.show', $reservacion->id) }}" icon="pencil" class="bg-green-food [&_svg]:text-black hover:!bg-green-600 transition-colors" size="sm"></flux:button>
+                                    <flux:button href="{{ route('reservaciones.ticket', $reservacion->id) }}" icon="download" class="bg-zinc-100 text-black hover:!bg-zinc-200 transition-colors" size="sm" title="Generar ticket PDF"></flux:button>
                                     <form method="POST" action="{{ route('reservaciones.delete', $reservacion->id) }}">
                                         @csrf
                                         @method('DELETE')
@@ -180,7 +181,7 @@
                     if(!res.ok) throw new Error('HTTP ' + res.status);
                     return res.json();
                 }).then(function(json){
-                    // la API devuelve un objeto de error con keys 'status'/'body' o el bloque del forecast
+                   
                     if(!json){ showError('Respuesta vacía de la API'); return; }
                     if(json.__error || json.error || json.status >= 400){
                         var body = json.body ? json.body : (json.error ? json.error : 'Error al consultar API');
@@ -188,17 +189,12 @@
                         return;
                     }
 
-                    // si la respuesta viene con la estructura completa (forecast/list) buscamos el entry
                     var entry = null;
                     if(json.list && Array.isArray(json.list)){
-                        // si el controller devolvió directamente la única entrada, quizá viene en json (ya tratada)
-                        // Si el controller devolvió la entrada encontrada, la usamos
-                        // En cualquier caso, si json tiene 'dt' usamos json
                         if(json.dt) entry = json;
                         else if(json.list && json.list.length && json.list.length === 1) entry = json.list[0];
                         else {
-                            // si el controlador devolvió la lista completa, elegir la primera o la más cercana
-                            entry = json.list[0];
+                         
                         }
                     } else if(json.forecast) {
                         entry = json.forecast;

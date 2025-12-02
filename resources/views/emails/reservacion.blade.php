@@ -10,59 +10,21 @@
             <td align="center">
                 <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="680" style="max-width:680px;width:100%;background:#ffffff;border-radius:8px;overflow:hidden;border:1px solid #e7e9e8;">
 
-                    <!-- Top logo -->
                     <tr>
-                        <td style="padding:18px 0;background:#fff;text-align:center;">
-                            <!-- small logo -->
-                            <div style="display:inline-block;padding:6px 10px;border-radius:6px;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="110" height="28" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3V2"/><path d="m15.4 17.4 3.2-2.8a2 2 0 1 1 2.8 2.9l-3.6 3.3c-.7.8-1.7 1.2-2.8 1.2h-4c-1.1 0-2.1-.4-2.8-1.2l-1.302-1.464A1 1 0 0 0 6.151 19H5"/><path d="M2 14h12a2 2 0 0 1 0 4h-2"/><path d="M4 10h16"/><path d="M5 10a7 7 0 0 1 14 0"/><path d="M5 14v6a1 1 0 0 1-1 1H2"/></svg>
-                            </div>
-                        </td>
-                                <!-- confirmation id removed as requested -->
-                        <td style="background:#fff;padding:0;">
-                            @php
-                                // usar la imagen `public/images/hero-email.jpg` como hero en los correos
-                                $hero = asset('images/hero-email.jpg');
-                                if (!preg_match('/^https?:\/\//i', $hero)) {
-                                    $hero = rtrim(config('app.url', ''), '/') . '/' . ltrim($hero, '/');
-                                }
-                            @endphp
-                            <img src="{{ $hero }}" alt="Foody" style="width:100%;height:160px;object-fit:cover;display:block;" />
-                        </td>
+                        <td style="padding:12px 0;background:#fff;text-align:center;" colspan="2"></td>
                     </tr>
-
-                    <!-- Title -->
-                    <tr>
-                        <td style="padding:28px 36px 8px 36px;text-align:center;">
-                            <h2 style="margin:0;font-size:22px;color:#111;font-weight:700;">Tu reservación está confirmada</h2>
-                            <div style="margin-top:8px;color:#6b6f6d;font-size:14px;">Foody · Restaurante en San Luis Potosí</div>
-                        </td>
-                    </tr>
-
-                    <!-- Details -->
-                    <tr>
-                        <td style="padding:12px 36px 20px 36px;text-align:center;">
-                            <div style="display:inline-block;background:#fafafa;border:1px solid #eef0ef;border-radius:8px;padding:16px 20px;text-align:center;min-width:320px;">
-                                <div style="color:#555;font-size:14px;">Mesa para <strong>{{ $reservacion->numero_personas }}</strong></div>
-                                <div style="margin-top:6px;font-size:13px;color:#333;font-weight:600;">{{ \Carbon\Carbon::parse($reservacion->fecha_hora)->translatedFormat('l, d \de F \de Y \a \las H:i') ?? $reservacion->fecha_hora }}</div>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <!-- Info rows (Name / Confirmation) -->
-                    <tr>
                         <td style="padding:0 36px 20px 36px;">
                             <table role="presentation" width="100%" style="border-collapse:collapse;font-size:14px;color:#444;">
                                 <tr>
                                     <td style="padding:8px 0;width:40%;color:#888;">Nombre</td>
                                     <td style="padding:8px 0;font-weight:700;">{{ $cliente?->name ?? 'Cliente' }}</td>
                                 </tr>
-                                <!-- confirmation id removed as requested -->
+                                
                             </table>
                         </td>
                     </tr>
 
-                    <!-- Address / Directions box -->
+                  
                     <tr>
                         <td style="padding:0 36px 22px 36px;text-align:center;">
                             <div style="display:inline-block;background:#fff;border:1px solid #e6e8e7;border-radius:6px;padding:16px 20px;min-width:300px;">
