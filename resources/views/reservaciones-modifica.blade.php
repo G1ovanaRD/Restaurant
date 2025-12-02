@@ -1,10 +1,9 @@
 <x-layouts.app>
     <div>
-        <flux:heading size="lg">Modificar reservaciones</flux:heading>
-        <flux:text class="mt-2">Modifica todos los detalles de las reservaciones</flux:text>
+        <flux:heading size="xl">Modificar reservaciones</flux:heading>
     </div>
 
-    <form method="POST" action="{{ route('reservaciones.update', $reservacion->id) }}">
+    <form method="POST" action="{{ route('reservaciones.update', $reservacion->id) }}" class="space-y-6 mt-4">
         @csrf
         <flux:select label="Mesa" wire:model="mesa_id">
             <option value="" disabled {{ empty($reservacion->mesa_id) ? 'selected' : '' }}>Seleccione una mesa</option>
