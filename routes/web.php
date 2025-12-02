@@ -38,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('platillos', [adminController::class, 'platillos'])->name('platillos.index');
     Route::post('platillos/save', [adminController::class, 'platilloSave'])->name('platillos.save');
     Route::get('platillos/export', [adminController::class, 'platillosExport'])->name('platillos.export');
+    Route::get('platillos/export/pdf', [adminController::class, 'platillosExportPdf'])->name('platillos.export.pdf');
     Route::post('platillos/importar', [adminController::class, 'platillosImportar'])->name('platillos.importar');
     Route::delete('platillos/delete/{id}', [adminController::class, 'platilloDelete'])->name('platillos.delete');
     Route::get('platillos/show/{id}', [adminController::class, 'platilloShow'])->name('platillos.show');
