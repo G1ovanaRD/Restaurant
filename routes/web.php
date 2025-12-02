@@ -7,6 +7,7 @@ use App\Livewire\Settings\TwoFactor;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\WeatherController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -36,6 +37,8 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('platillos', [adminController::class, 'platillos'])->name('platillos.index');
     Route::post('platillos/save', [adminController::class, 'platilloSave'])->name('platillos.save');
+    Route::get('platillos/export', [adminController::class, 'platillosExport'])->name('platillos.export');
+    Route::post('platillos/importar', [adminController::class, 'platillosImportar'])->name('platillos.importar');
     Route::delete('platillos/delete/{id}', [adminController::class, 'platilloDelete'])->name('platillos.delete');
     Route::get('platillos/show/{id}', [adminController::class, 'platilloShow'])->name('platillos.show');
     Route::post('platillos/update/{id}', [adminController::class, 'platilloUPdate'])->name('platillos.update');
@@ -54,3 +57,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('reservacionesCliente/save/{id}', [adminController::class, 'reservacionClienteSave'])->name('reservacionesCliente.save');
     Route::post('reservacionesCliente/update/{id_user}/{id}', [adminController::class, 'reservacionClienteUpdate'])->name('reservacionesCliente.update');
 });
+
+Route::get('weather/{city?}', [WeatherController::class, 'current'])->name('weather.current');
