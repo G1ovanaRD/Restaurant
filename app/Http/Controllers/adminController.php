@@ -7,9 +7,15 @@ use App\Models\Platillo;
 use App\Models\Mesa;
 use App\Models\Reservacion;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\PlatillosExport;
 use App\Imports\PlatillosImport;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Reservacion as ReservacionMailable;
+use App\Mail\ReservacionCancelada as ReservacionCanceladaMailable;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 class adminController extends Controller
 {
 
@@ -62,13 +68,19 @@ class adminController extends Controller
     public function reservaciones() {
         $reservaciones =  Reservacion::all();
         $users = User::all();
-        $mesas = Mesa::all();
+        // pasar solo mesas disponibles (estado != 'ocupado') al modal de creación
+        $mesas = Mesa::where(function($q){
+            $q->whereNull('estado')->orWhereRaw("LOWER(estado) <> 'ocupado'");
+        })->get();
         return view('reservaciones', compact('reservaciones', 'users', 'mesas'));
     }
 
     public function reservacionesCliente($id) {
         $reservaciones = Reservacion::where('user_id', $id)->get();
-        $mesas = Mesa::all();
+        // mostrar solo mesas disponibles cuando el cliente crea una reservación
+        $mesas = Mesa::where(function($q){
+            $q->whereNull('estado')->orWhereRaw("LOWER(estado) <> 'ocupado'");
+        })->get();
         return view('reservaciones-cliente', compact('reservaciones', 'mesas'));
     }
 
@@ -88,6 +100,28 @@ class adminController extends Controller
     {
         $fileName = 'platillos_' . date('Ymd_His') . '.xlsx';
         return Excel::download(new PlatillosExport(), $fileName);
+    }
+
+    public function platillosExportPdf(Request $request)
+    {
+        $platillos = Platillo::all();
+        if (!class_exists(Dompdf::class)) {
+            return redirect()->back()->with('error', 'No se pudo generar el PDF. Falta la librería Dompdf.');
+        }
+
+        $html = view('pdf.menu', compact('platillos'))->render();
+
+        $options = new Options();
+        $options->set('isRemoteEnabled', true);
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        $fileName = 'menu_' . date('Ymd_His') . '.pdf';
+        return response($dompdf->output(), 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="' . $fileName . '"');
     }
 
     public function platillosImportar(Request $request)
@@ -154,6 +188,11 @@ class adminController extends Controller
             return redirect()->back()->with('error', 'La mesa seleccionada ya está ocupada. Elige otra mesa.');
         }
 
+        // verificar capacidad de la mesa
+        if ($mesa && isset($validated['numero_personas']) && $mesa->capacidad < $validated['numero_personas']) {
+            return redirect()->back()->with('error', 'La mesa seleccionada no tiene la capacidad suficiente para el número de personas solicitado.');
+        }
+
         $reservacion = new Reservacion();
         $reservacion->mesa_id = $validated['mesa_id'];
         $reservacion->user_id = $validated['user_id'];
@@ -166,6 +205,17 @@ class adminController extends Controller
         if ($mesa) {
             $mesa->estado = 'ocupado';
             $mesa->save();
+        }
+
+        // enviar correo de confirmación al cliente (si tiene email)
+        try {
+            $cliente = User::find($validated['user_id']);
+            if ($cliente && !empty($cliente->email)) {
+                Mail::to($cliente->email)->send(new ReservacionMailable($reservacion, $cliente));
+            }
+        } catch (\Exception $e) {
+            \Log::error('Error enviando correo de reservación', ['error' => $e->getMessage(), 'reservacion_id' => $reservacion->id]);
+            // continuar sin bloquear la creación de la reservación
         }
 
         return redirect()->back()->with('status', 'Reservación creada correctamente');
@@ -201,6 +251,16 @@ class adminController extends Controller
             if ($mesa) {
                 $mesa->estado = 'disponible';
                 $mesa->save();
+            }
+
+            // enviar correo de cancelación al cliente
+            try {
+                $cliente = User::find($reservacion->user_id);
+                if ($cliente && !empty($cliente->email)) {
+                    Mail::to($cliente->email)->send(new ReservacionCanceladaMailable($reservacion, $cliente));
+                }
+            } catch (\Exception $e) {
+                \Log::error('Error enviando correo de cancelación', ['error' => $e->getMessage(), 'reservacion_id' => $reservacion->id]);
             }
 
             $reservacion->delete();
@@ -266,6 +326,10 @@ class adminController extends Controller
             $newMesa = Mesa::find($newMesaId);
             if ($newMesa && ($newMesa->estado === 'ocupado' || strtolower($newMesa->estado) === 'ocupado')) {
                 return redirect()->back()->with('error', 'La mesa seleccionada ya está ocupada. Elige otra mesa.');
+            }
+            // verificar capacidad de la nueva mesa frente al número de personas
+            if ($newMesa && isset($request->numero_personas) && $newMesa->capacidad < intval($request->numero_personas)) {
+                return redirect()->back()->with('error', 'La mesa seleccionada no tiene la capacidad suficiente para el número de personas solicitado.');
             }
         }
 

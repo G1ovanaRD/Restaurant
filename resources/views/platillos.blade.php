@@ -15,7 +15,7 @@
                 </form>
                 
                 {{-- AQUI AGREGAN LA FUNCIONALIDAD DE DESCARGAR EL MENU --}}
-                <flux:button icon="download" title="Descargar menú" class="bg-green-600 [&_svg]:text-white hover:!bg-green-700 transition-colors cursor-pointer"/>
+                <flux:button href="{{ route('platillos.export.pdf') }}" icon="download" title="Descargar menú" class="bg-green-600 [&_svg]:text-white hover:!bg-green-700 transition-colors cursor-pointer"/>
 
                 <flux:modal.trigger name="edit-platillo">
                     <flux:button icon="plus" title="Agregar platillo" class="bg-black-food [&_svg]:text-white hover:!bg-zinc-700 transition-colors cursor-pointer"/>
@@ -23,40 +23,57 @@
                 @endif
                 @if(auth()->user()->rol === 'cliente')
                 {{-- AQUI AGREGAN LA FUNCIONALIDAD DE DESCARGAR EL MENU --}}
-                <flux:button icon="download" title="Descargar menú" class="bg-green-600 [&_svg]:text-white hover:!bg-green-700 transition-colors cursor-pointer"/>
+                <flux:button href="{{ route('platillos.export.pdf') }}" icon="download" title="Descargar menú" class="bg-green-600 [&_svg]:text-white hover:!bg-green-700 transition-colors cursor-pointer"/>
                 @endif
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @foreach($platillos as $platillo)
-                <flux:modal.trigger name="platillo-{{ $platillo->id }}">
-                    <div class="bg-white dark:bg-zinc-900 rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-700 cursor-pointer shadow hover:shadow-xl transition-shadow">
-                        <img src="{{ $platillo->imagen }}" alt="{{ $platillo->nombre }}" class="w-full h-60 object-cover">
-                        
-                        <div class="p-4 space-y-2">
-                            <div>
-                                <flux:heading size="xl">{{ $platillo->nombre }}</flux:heading>
-                                <flux:badge size="sm" color="lime" class="mt-1 text-black">{{ $platillo->categoria }}</flux:badge>
+                <div class="bg-white dark:bg-zinc-900 rounded-lg overflow-hidden border cursor-pointer shadow hover:shadow-xl transition-shadow">
+                    <flux:modal.trigger name="platillo-{{ $platillo->id }}">
+                        <div>
+                            <img src="{{ $platillo->imagen }}" class="w-full h-60 object-cover">
+
+                            <div class="p-4 space-y-2">
+                                <div>
+                                    <flux:heading size="xl">{{ $platillo->nombre }}</flux:heading>
+                                    <flux:badge size="sm" color="lime" class="mt-1 text-black">
+                                        {{ $platillo->categoria }}
+                                    </flux:badge>
+                                </div>
+
+                                <flux:text class="line-clamp-2">{{ $platillo->descripcion }}</flux:text>
+
+                                <flux:heading size="lg" class="text-green-700">
+                                    ${{ number_format($platillo->precio, 2) }}
+                                </flux:heading>
                             </div>
-                            
-                            <flux:text class="line-clamp-2">{{ $platillo->descripcion }}</flux:text>
-                            
-                            <flux:heading size="lg" class="text-green-700">${{ number_format($platillo->precio, 2) }}</flux:heading>
-                            
-                            @if(auth()->user()->rol === 'admin')
-                            <div class="flex gap-2 pt-2 items-end justify-self-end">
-                                <flux:button href="{{ route('platillos.show', $platillo->id) }}" icon="pencil" class="bg-green-food [&_svg]:text-black hover:!bg-green-600 transition-colors" size="sm"></flux:button>
-                                <form method="POST" action="{{ route('platillos.delete', $platillo->id) }}" class="flex-1">
-                                    @csrf
-                                    @method('DELETE')
-                                    <flux:button type="submit" icon="trash" class="bg-black-food [&_svg]:text-white cursor-pointer hover:!bg-zinc-700 transition-colors" size="sm"></flux:button>
-                                </form>
-                            </div>
-                            @endif
                         </div>
-                    </div>
-                </flux:modal.trigger>
+                    </flux:modal.trigger>
+
+                    @if(auth()->user()->rol === 'admin')
+                        <div class="flex gap-2 p-4 pt-0 justify-end">
+                            <flux:button 
+                                href="{{ route('platillos.show', $platillo->id) }}" 
+                                icon="pencil" 
+                                class="bg-green-food [&_svg]:text-black hover:!bg-green-600 transition-colors" 
+                                size="sm"
+                            ></flux:button>
+
+                            <form method="POST" action="{{ route('platillos.delete', $platillo->id) }}">
+                                @csrf
+                                @method('DELETE')
+                                <flux:button 
+                                    type="submit" 
+                                    icon="trash" 
+                                    class="bg-black-food cursor-pointer [&_svg]:text-white hover:!bg-zinc-700 transition-colors" 
+                                    size="sm"
+                                ></flux:button>
+                            </form>
+                        </div>
+                    @endif
+                </div>
             @endforeach
         </div>
     </div>
