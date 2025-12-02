@@ -1,74 +1,69 @@
 <x-layouts.app>
     <div class="space-y-6">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <h2 class="text-3xl font-bold">Platillos</h2>
-            <div class="flex items-center gap-3">
-                <form method="POST" action="{{ route('platillos.importar') }}" enctype="multipart/form-data" class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                <form method="POST" action="{{ route('platillos.importar') }}" enctype="multipart/form-data" class="flex items-center gap-2 w-full md:w-auto">
                     @csrf
-                    <label class="text-sm text-gray-600">Importar Excel</label>
-                    <input type="file" name="file" accept=".xlsx,.xls,.csv" class="block" />
-                    <flux:button type="submit" variant="primary" size="sm">Importar</flux:button>
+                    <input type="file" name="file" accept=".xlsx,.xls,.csv" class="block text-sm text-gray-500 max-w-[150px] md:max-w-none truncate" />
+                    <flux:button type="submit" icon="import" class="bg-black-food [&_svg]:text-white hover:!bg-zinc-700 transition-colors cursor-pointer flex-shrink-0"></flux:button>
                 </form>
 
-                <a href="{{ route('platillos.export') }}" class="inline-flex items-center gap-2 rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700">
-                    Exportar Excel
-                </a>
+                <form method="GET" action="{{ route('platillos.export') }}">
+                    <flux:button type="submit" icon="export" class="bg-black-food [&_svg]:text-white hover:!bg-zinc-700 transition-colors cursor-pointer"></flux:button>
+                </form>
 
                 <flux:modal.trigger name="edit-platillo">
-                    <flux:button>Agregar Platillo</flux:button>
+                    <flux:button icon="plus" class="bg-black-food [&_svg]:text-white hover:!bg-zinc-700 transition-colors cursor-pointer"/>
                 </flux:modal.trigger>
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @foreach($platillos as $platillo)
-            <flux:modal.trigger name="platillo-{{ $platillo->id }}">
-                <div class="bg-white dark:bg-zinc-900 rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-700 cursor-pointer shadow hover:shadow-xl transition-shadow">
-                    <img src="{{ $platillo->imagen }}" alt="{{ $platillo->nombre }}" class="w-full h-60 object-cover">
-                    
-                    <div class="p-4 space-y-3">
-                        <div>
-                            <flux:heading size="lg">{{ $platillo->nombre }}</flux:heading>
-                            <flux:badge size="sm" class="mt-1 bg-green-food text-white">{{ $platillo->categoria }}</flux:badge>
-                        </div>
+                <flux:modal.trigger name="platillo-{{ $platillo->id }}">
+                    <div class="bg-white dark:bg-zinc-900 rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-700 cursor-pointer shadow hover:shadow-xl transition-shadow">
+                        <img src="{{ $platillo->imagen }}" alt="{{ $platillo->nombre }}" class="w-full h-60 object-cover">
                         
-                        <flux:text class="line-clamp-2">{{ $platillo->descripcion }}</flux:text>
-                        
-                        <flux:heading size="xl" class="text-green-food">${{ number_format($platillo->precio, 2) }}</flux:heading>
-                        
-                        <div class="flex gap-2 pt-2">
-                            <flux:button href="{{ route('platillos.show', $platillo->id) }}" variant="ghost" size="sm" class="flex-1">
-                                Editar
-                            </flux:button>
-                            <form method="POST" action="{{ route('platillos.delete', $platillo->id) }}" class="flex-1">
-                                @csrf
-                                @method('DELETE')
-                                <flux:button type="submit" variant="danger" size="sm" class="w-full cursor-pointer">
-                                    Eliminar
-                                </flux:button>
-                            </form>
+                        <div class="p-4 space-y-2">
+                            <div>
+                                <flux:heading size="xl">{{ $platillo->nombre }}</flux:heading>
+                                <flux:badge size="sm" color="lime" class="mt-1 text-black">{{ $platillo->categoria }}</flux:badge>
+                            </div>
+                            
+                            <flux:text class="line-clamp-2">{{ $platillo->descripcion }}</flux:text>
+                            
+                            <flux:heading size="lg" class="text-green-700">${{ number_format($platillo->precio, 2) }}</flux:heading>
+                            
+                            <div class="flex gap-2 pt-2 items-end justify-self-end">
+                                <flux:button href="{{ route('platillos.show', $platillo->id) }}" icon="pencil" class="bg-green-food [&_svg]:text-black hover:!bg-green-600 transition-colors" size="sm"></flux:button>
+                                <form method="POST" action="{{ route('platillos.delete', $platillo->id) }}" class="flex-1">
+                                    @csrf
+                                    @method('DELETE')
+                                    <flux:button type="submit" icon="trash" class="bg-black-food [&_svg]:text-white cursor-pointer hover:!bg-zinc-700 transition-colors" size="sm"></flux:button>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </flux:modal.trigger>
+                </flux:modal.trigger>
             @endforeach
         </div>
     </div>
 
-<flux:modal name="edit-platillo" class="md:w-96">
-    <div class="space-y-6">
-        @if(session('status'))
-            <div class="p-3 bg-green-50 text-green-800 rounded">{{ session('status') }}</div>
-        @endif
-        @if(session('error'))
-            <div class="p-3 bg-red-50 text-red-800 rounded">{{ session('error') }}</div>
-        @endif
-        <div>
-            <flux:heading size="lg">Agregar platillos</flux:heading>
-            <flux:text class="mt-2">Agrega un platillo nuevo</flux:text>
+    <flux:modal name="edit-platillo" class="md:w-96">
+        <div class="space-y-6">
+            @if(session('status'))
+                <div class="p-3 bg-green-50 text-green-800 rounded">{{ session('status') }}</div>
+            @endif
+            @if(session('error'))
+                <div class="p-3 bg-red-50 text-red-800 rounded">{{ session('error') }}</div>
+            @endif
+            <div>
+                <flux:heading size="lg">Agregar platillos</flux:heading>
+                <flux:text class="mt-2">Agrega un platillo nuevo</flux:text>
+            </div>
         </div>
     </flux:modal>
-    @endforeach
 
     <flux:modal name="edit-platillo" class="md:w-96">
         <div class="space-y-6">
