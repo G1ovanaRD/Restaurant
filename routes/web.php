@@ -49,4 +49,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('reservaciones/delete/{id}', [adminController::class, 'reservacionDelete'])->name('reservaciones.delete');
     Route::get('reservaciones/show/{id}', [adminController::class, 'reservacionShow'])->name('reservaciones.show');
     Route::post('reservaciones/update/{id}', [adminController::class, 'reservacionUpdate'])->name('reservaciones.update');
+    Route::get('reservacionesCliente/{id}', [adminController::class, 'reservacionesCliente'])->name('reservacionesCliente.index');
+    Route::get('reservacionesCliente/show/{id}', [adminController::class, 'reservacionClienteShow'])->name('reservacionesCliente.show');
+    Route::post('reservacionesCliente/save/{id}', [adminController::class, 'reservacionClienteSave'])->name('reservacionesCliente.save');
+    Route::post('reservacionesCliente/update/{id_user}/{id}', [adminController::class, 'reservacionClienteUpdate'])->name('reservacionesCliente.update');
 });
