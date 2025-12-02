@@ -25,14 +25,15 @@
                             <td class="px-6 py-4 text-sm text-zinc-900 dark:text-zinc-100">{{ $reservacion->fecha_hora }}</td>
                             <td class="px-6 py-4 text-sm text-zinc-900 dark:text-zinc-100">{{ $reservacion->numero_personas }}</td>
                             <td class="px-6 py-4 text-sm">
-                                <div class="flex gap-2">
-                                    <flux:button href="{{ route('reservacionesCliente.show', $reservacion->id) }}" icon="pencil" class="bg-green-food [&_svg]:text-black" size="sm"></flux:button>
-                                    <form method="POST" action="{{ route('reservaciones.delete', $reservacion->id) }}" style="display:inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <flux:button type="submit" icon="trash" class="bg-black-food [&_svg]:text-white" size="sm"></flux:button>
-                                    </form>
-                                </div>
+                                                <div class="flex gap-2">
+                                                    <flux:button href="{{ route('reservacionesCliente.show', $reservacion->id) }}" icon="pencil" class="bg-green-food [&_svg]:text-black" size="sm"></flux:button>
+                                                    <flux:button href="{{ route('reservaciones.ticket', $reservacion->id) }}" icon="download" class="bg-zinc-100 text-black" size="sm" title="Generar ticket PDF"></flux:button>
+                                                    <form method="POST" action="{{ route('reservaciones.delete', $reservacion->id) }}" style="display:inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <flux:button type="submit" icon="trash" class="bg-black-food [&_svg]:text-white" size="sm"></flux:button>
+                                                    </form>
+                                                </div>
                             </td>
                         </tr>
                         @endforeach

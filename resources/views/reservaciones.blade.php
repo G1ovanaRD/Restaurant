@@ -49,6 +49,7 @@
                             <td class="px-6 py-4 text-sm">
                                 <div class="flex gap-2">
                                     <flux:button href="{{ route('reservaciones.show', $reservacion->id) }}" icon="pencil" class="bg-green-food [&_svg]:text-black hover:!bg-green-600 transition-colors" size="sm"></flux:button>
+                                    <flux:button href="{{ route('reservaciones.ticket', $reservacion->id) }}" icon="download" class="bg-zinc-100 text-black hover:!bg-zinc-200 transition-colors" size="sm" title="Generar ticket PDF"></flux:button>
                                     <form method="POST" action="{{ route('reservaciones.delete', $reservacion->id) }}">
                                         @csrf
                                         @method('DELETE')

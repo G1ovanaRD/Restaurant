@@ -218,7 +218,8 @@ class adminController extends Controller
             // continuar sin bloquear la creación de la reservación
         }
 
-        return redirect()->back()->with('status', 'Reservación creada correctamente');
+        // redirigir a la ruta que genera el ticket PDF (descarga automática)
+        return redirect()->route('reservaciones.ticket', $reservacion->id);
     }
 
     public function reservacionClienteSave(REQUEST $request, $id) {
@@ -228,7 +229,15 @@ class adminController extends Controller
         $reservacion->fecha_hora = $request->fecha_hora;
         $reservacion->numero_personas = $request->numero_personas;
         $reservacion->save();
-        return redirect()->back();
+        // marcar la mesa como ocupada si existe
+        $mesa = Mesa::find($reservacion->mesa_id);
+        if ($mesa) {
+            $mesa->estado = 'ocupado';
+            $mesa->save();
+        }
+
+        // redirigir a la descarga del ticket
+        return redirect()->route('reservaciones.ticket', $reservacion->id);
     }
 
     public function platilloDelete($id) {
@@ -285,6 +294,35 @@ class adminController extends Controller
         $users = User::all();
         $mesas = Mesa::all();
         return view('reservaciones-modifica', compact('reservacion', 'users', 'mesas'));
+    }
+
+    /**
+     * Genera un PDF tipo ticket para la reservación (sin mostrar el id)
+     */
+    public function reservacionTicketPdf($id)
+    {
+        $reservacion = Reservacion::find($id);
+        if (!$reservacion) {
+            return redirect()->back()->with('error', 'Reservación no encontrada.');
+        }
+
+        $cliente = User::find($reservacion->user_id);
+        $mesa = Mesa::find($reservacion->mesa_id);
+
+        $html = view('pdf.reservacion-ticket', compact('reservacion', 'cliente', 'mesa'))->render();
+
+        $options = new Options();
+        $options->set('isRemoteEnabled', true);
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        // tamaño ticket pequeño
+        $dompdf->setPaper('A6', 'portrait');
+        $dompdf->render();
+
+        $fileName = 'ticket_reservacion_' . date('Ymd_His') . '.pdf';
+        return response($dompdf->output(), 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="' . $fileName . '"');
     }
 
     public function reservacionClienteShow($id) {
