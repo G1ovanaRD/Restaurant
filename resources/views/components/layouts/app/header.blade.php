@@ -84,10 +84,22 @@
 
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Platform')">
-                    <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-                      {{ __('Dashboard') }}
-                    </flux:navlist.item>
-                </flux:navlist.group>
+                    <flux:navbar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                        {{ __('Home') }}
+                    </flux:navbar.item>
+                    <flux:navbar.item icon="book" :href="route('platillos.index')" :current="request()->routeIs('platillos.index')" wire:navigate>
+                        {{ __('Platillos') }}
+                    </flux:navbar.item>
+                    <flux:navbar.item icon="utensils" :href="route('mesas.index')" :current="request()->routeIs('mesas.index')" wire:navigate>
+                        {{ __('Mesas') }}
+                    </flux:navbar.item>
+                    <flux:navbar.item icon="clock" :href="route('reservaciones.index')" :current="request()->routeIs('reservaciones.index')" wire:navigate>
+                        {{ __('Reservar') }}
+                    </flux:navbar.item>
+                    <flux:navbar.item icon="clock" :href="route('reservacionesCliente.index', auth()->user()->id)" :current="request()->routeIs('reservacionesCliente.index')" wire:navigate>
+                        {{ __('ReservarC') }}
+                    </flux:navbar.item>
+                    </flux:navlist.group>
             </flux:navlist>
 
             <flux:spacer />
