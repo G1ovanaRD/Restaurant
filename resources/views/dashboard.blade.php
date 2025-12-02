@@ -18,7 +18,7 @@
                     @endif
                     @if(auth()->user()->rol === 'cliente')
                     <button class="w-full sm:w-auto">
-                        <a href="{{ route('reservacionesCliente.index') }}" class="block text-center rounded-lg bg-black-food px-6 py-3 text-base md:text-lg font-medium text-white hover:bg-[#2C2C2C]">
+                        <a href="{{ route('reservacionesCliente.index', auth()->user()->id) }}" class="block text-center rounded-lg bg-black-food px-6 py-3 text-base md:text-lg font-medium text-white hover:bg-[#2C2C2C]">
                             {{ __('Book Table') }}
                         </a>
                     </button>
