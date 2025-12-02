@@ -50,6 +50,40 @@
         </div>
     </div>
 
+    @foreach($platillos as $platillo)
+    <flux:modal name="platillo-{{ $platillo->id }}" class="md:w-3/4">
+        <div class="space-y-6 px-10">
+            <img src="{{ $platillo->imagen }}" class="w-full h-56 object-cover rounded-lg" />
+
+            <flux:heading size="lg">{{ $platillo->nombre }}</flux:heading>
+
+            <flux:text>{{ $platillo->descripcion }}</flux:text>
+
+            <flux:badge size="lg" class="bg-green-food text-white">
+                {{ $platillo->categoria }}
+            </flux:badge>
+
+            <flux:heading size="xl" class="text-green-food">
+                ${{ number_format($platillo->precio, 2) }}
+            </flux:heading>
+
+            <div class="flex gap-2 pt-2">
+                <flux:button href="{{ route('platillos.show', $platillo->id) }}" variant="ghost" class="flex-1">
+                    Editar
+                </flux:button>
+
+                <form method="POST" action="{{ route('platillos.delete', $platillo->id) }}" class="flex-1">
+                    @csrf
+                    @method('DELETE')
+                    <flux:button type="submit" variant="danger" class="w-full cursor-pointer">
+                        Eliminar
+                    </flux:button>
+                </form>
+            </div>
+        </div>
+    </flux:modal>
+    @endforeach
+
     <flux:modal name="edit-platillo" class="md:w-96">
         <div class="space-y-6">
             @if(session('status'))
