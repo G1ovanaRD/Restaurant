@@ -25,6 +25,9 @@
                 <flux:navbar.item icon="clock" :href="route('reservaciones.index')" :current="request()->routeIs('reservaciones.index')" wire:navigate>
                     {{ __('Reservar') }}
                 </flux:navbar.item>
+                <flux:navbar.item icon="clock" :href="route('reservacionesCliente.index', auth()->user()->id)" :current="request()->routeIs('reservacionesCliente.index')" wire:navigate>
+                    {{ __('ReservarC') }}
+                </flux:navbar.item>
             </flux:navbar>
 
             <flux:spacer />
