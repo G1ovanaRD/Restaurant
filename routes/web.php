@@ -56,6 +56,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('reservacionesCliente/show/{id}', [adminController::class, 'reservacionClienteShow'])->name('reservacionesCliente.show');
     Route::post('reservacionesCliente/save/{id}', [adminController::class, 'reservacionClienteSave'])->name('reservacionesCliente.save');
     Route::post('reservacionesCliente/update/{id_user}/{id}', [adminController::class, 'reservacionClienteUpdate'])->name('reservacionesCliente.update');
+    Route::get('users', [adminController::class, 'users'])->name('users.index');
+    Route::post('users/save', [adminController::class, 'userSave'])->name('users.save');
+    Route::delete('users/delete/{id}', [adminController::class, 'userDelete'])->name('users.delete');
+    Route::get('users/show/{id}', [adminController::class, 'userShow'])->name('users.show');
+    Route::post('users/update/{id}', [adminController::class, 'userUpdate'])->name('users.update');
 });
 
 Route::get('weather/{city?}', [WeatherController::class, 'current'])->name('weather.current');
