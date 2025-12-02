@@ -1,9 +1,8 @@
 <x-layouts.app>
     <div>
-        <flux:heading size="lg">Modificar mesa</flux:heading>
-        <flux:text class="mt-2">Modifica la mesa seleccionada</flux:text>
+        <flux:heading size="xl">Modificar mesa</flux:heading>
     </div>
-    <form method="POST" action="{{ route('mesas.update', $mesa->id) }}">
+    <form method="POST" action="{{ route('mesas.update', $mesa->id) }}" class="space-y-6 mt-4">
         @csrf
         <flux:input label="Capacidad" placeholder="Capacidad" wire:model='capacidad' value="{{ $mesa->capacidad }}"/>
         <flux:input label="Ubicacion" placeholder="Ubicación" wire:model='ubicacion' value="{{ $mesa->ubicacion }}"/>

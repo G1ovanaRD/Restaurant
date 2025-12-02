@@ -58,29 +58,24 @@
         <div class="space-y-6 px-10">
             <img src="{{ $platillo->imagen }}" class="w-full h-56 object-cover rounded-lg" />
 
-            <flux:heading size="lg">{{ $platillo->nombre }}</flux:heading>
+            <flux:heading size="xl">{{ $platillo->nombre }}</flux:heading>
 
             <flux:text>{{ $platillo->descripcion }}</flux:text>
 
-            <flux:badge size="lg" class="bg-green-food text-white">
-                {{ $platillo->categoria }}
-            </flux:badge>
+            <flux:badge size="sm" color="lime" class="mt-1 text-black">{{ $platillo->categoria }}</flux:badge>
 
-            <flux:heading size="xl" class="text-green-food">
+
+            <flux:heading size="xl" class="text-green-700">
                 ${{ number_format($platillo->precio, 2) }}
             </flux:heading>
 
             <div class="flex gap-2 pt-2">
-                <flux:button href="{{ route('platillos.show', $platillo->id) }}" variant="ghost" class="flex-1">
-                    Editar
-                </flux:button>
-
+                <flux:button href="{{ route('platillos.show', $platillo->id) }}" icon="pencil" class="bg-green-food [&_svg]:text-black hover:!bg-green-600 transition-colors" size="sm"></flux:button>
                 <form method="POST" action="{{ route('platillos.delete', $platillo->id) }}" class="flex-1">
                     @csrf
                     @method('DELETE')
-                    <flux:button type="submit" variant="danger" class="w-full cursor-pointer">
-                        Eliminar
-                    </flux:button>
+                    <flux:button type="submit" icon="trash" class="bg-black-food [&_svg]:text-white cursor-pointer hover:!bg-zinc-700 transition-colors" size="sm"></flux:button>
+
                 </form>
             </div>
         </div>
