@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('rol')->default('admin');
+            $table->string('rol')->default('cliente');
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();

@@ -26,6 +26,9 @@
                 <flux:navbar.item icon="clock" :href="route('reservaciones.index')" :current="request()->routeIs('reservaciones.index')" wire:navigate>
                     {{ __('Reservar') }}
                 </flux:navbar.item>
+                <flux:navbar.item icon="users" :href="route('users.index')" :current="request()->routeIs('users.index')" wire:navigate>
+                    {{ __('Usuarios') }}
+                </flux:navbar.item>
                 @endif
                 @if(auth()->user()->rol === 'cliente')
                     <flux:navbar.item icon="book" :href="route('platillos.index')" :current="request()->routeIs('platillos.index')" wire:navigate>
@@ -102,6 +105,9 @@
                     </flux:navbar.item>
                     <flux:navbar.item icon="clock" :href="route('reservaciones.index')" :current="request()->routeIs('reservaciones.index')" wire:navigate>
                         {{ __('Reservar') }}
+                    </flux:navbar.item>
+                    <flux:navbar.item icon="users" :href="route('users.index')" :current="request()->routeIs('users.index')" wire:navigate>
+                        {{ __('Usuarios') }}
                     </flux:navbar.item>
                     <flux:navbar.item icon="clock" :href="route('reservacionesCliente.index', auth()->user()->id)" :current="request()->routeIs('reservacionesCliente.index')" wire:navigate>
                         {{ __('ReservarC') }}

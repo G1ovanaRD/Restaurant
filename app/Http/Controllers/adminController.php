@@ -368,4 +368,42 @@ class adminController extends Controller
         $reservacion->save();
         return redirect()->route('reservacionesCliente.index', $id_user);
     }
+
+    public function users() {
+        $users = User::all();
+        return view('user', compact('users'));
+    }
+
+    public function userSave(REQUEST $request) {
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->password);
+        $user->rol = $request->rol;
+        $user->save();
+        return redirect()->back();
+    }
+
+    public function userDelete($id) {
+        $user = User::find($id);
+        $user->delete();
+        return redirect()->back();
+    }
+
+    public function userShow($id) {
+        $user = User::find($id);
+        return view('user-modifica', compact('user'));
+    }
+
+    public function userUpdate(REQUEST $request, $id) {
+        $user = User::find($id);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        if ($request->password) {
+            $user->password = bcrypt($request->password);
+        }
+        $user->rol = $request->rol;
+        $user->save();
+        return redirect()->route('users.index');
+    }
 }
