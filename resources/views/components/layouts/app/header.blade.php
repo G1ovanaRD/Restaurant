@@ -13,6 +13,7 @@
             <flux:spacer />
             
             <flux:navbar class="-mb-px max-lg:hidden">
+                @if(auth()->user()->rol === 'admin')
                 <flux:navbar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                     {{ __('Home') }}
                 </flux:navbar.item>
@@ -25,9 +26,15 @@
                 <flux:navbar.item icon="clock" :href="route('reservaciones.index')" :current="request()->routeIs('reservaciones.index')" wire:navigate>
                     {{ __('Reservar') }}
                 </flux:navbar.item>
-                <flux:navbar.item icon="clock" :href="route('reservacionesCliente.index', auth()->user()->id)" :current="request()->routeIs('reservacionesCliente.index')" wire:navigate>
-                    {{ __('ReservarC') }}
-                </flux:navbar.item>
+                @endif
+                @if(auth()->user()->rol === 'cliente')
+                    <flux:navbar.item icon="book" :href="route('platillos.index')" :current="request()->routeIs('platillos.index')" wire:navigate>
+                        {{ __('Platillos') }}
+                    </flux:navbar.item>
+                    <flux:navbar.item icon="clock" :href="route('reservacionesCliente.index', auth()->user()->id)" :current="request()->routeIs('reservacionesCliente.index')" wire:navigate>
+                        {{ __('ReservarC') }}
+                    </flux:navbar.item>
+                @endif
             </flux:navbar>
 
             <flux:spacer />

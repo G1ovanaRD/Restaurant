@@ -3,6 +3,7 @@
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <h2 class="text-3xl font-bold">Platillos</h2>
             <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                @if(auth()->user()->rol === 'admin')
                 <form method="POST" action="{{ route('platillos.importar') }}" enctype="multipart/form-data" class="flex items-center gap-2 w-full md:w-auto">
                     @csrf
                     <input type="file" name="file" accept=".xlsx,.xls,.csv" class="block text-sm text-gray-500 max-w-[150px] md:max-w-none truncate" />
@@ -19,6 +20,11 @@
                 <flux:modal.trigger name="edit-platillo">
                     <flux:button icon="plus" title="Agregar platillo" class="bg-black-food [&_svg]:text-white hover:!bg-zinc-700 transition-colors cursor-pointer"/>
                 </flux:modal.trigger>
+                @endif
+                @if(auth()->user()->rol === 'cliente')
+                {{-- AQUI AGREGAN LA FUNCIONALIDAD DE DESCARGAR EL MENU --}}
+                <flux:button icon="download" title="Descargar menú" class="bg-green-600 [&_svg]:text-white hover:!bg-green-700 transition-colors cursor-pointer"/>
+                @endif
             </div>
         </div>
 
@@ -38,6 +44,7 @@
                             
                             <flux:heading size="lg" class="text-green-700">${{ number_format($platillo->precio, 2) }}</flux:heading>
                             
+                            @if(auth()->user()->rol === 'admin')
                             <div class="flex gap-2 pt-2 items-end justify-self-end">
                                 <flux:button href="{{ route('platillos.show', $platillo->id) }}" icon="pencil" class="bg-green-food [&_svg]:text-black hover:!bg-green-600 transition-colors" size="sm"></flux:button>
                                 <form method="POST" action="{{ route('platillos.delete', $platillo->id) }}" class="flex-1">
@@ -46,6 +53,7 @@
                                     <flux:button type="submit" icon="trash" class="bg-black-food [&_svg]:text-white cursor-pointer hover:!bg-zinc-700 transition-colors" size="sm"></flux:button>
                                 </form>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </flux:modal.trigger>
@@ -69,6 +77,7 @@
                 ${{ number_format($platillo->precio, 2) }}
             </flux:heading>
 
+            @if(auth()->user()->rol === 'admin')
             <div class="flex gap-2 pt-2">
                 <flux:button href="{{ route('platillos.show', $platillo->id) }}" icon="pencil" class="bg-green-food [&_svg]:text-black hover:!bg-green-600 transition-colors" size="sm"></flux:button>
                 <form method="POST" action="{{ route('platillos.delete', $platillo->id) }}" class="flex-1">
@@ -78,6 +87,7 @@
 
                 </form>
             </div>
+            @endif
         </div>
     </flux:modal>
     @endforeach
