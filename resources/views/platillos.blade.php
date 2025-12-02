@@ -15,7 +15,7 @@
                 </form>
                 
                 {{-- AQUI AGREGAN LA FUNCIONALIDAD DE DESCARGAR EL MENU --}}
-                <flux:button icon="download" title="Descargar menú" class="bg-green-600 [&_svg]:text-white hover:!bg-green-700 transition-colors cursor-pointer"/>
+                <flux:button href="{{ route('platillos.export.pdf') }}" icon="download" title="Descargar menú" class="bg-green-600 [&_svg]:text-white hover:!bg-green-700 transition-colors cursor-pointer"/>
 
                 <flux:modal.trigger name="edit-platillo">
                     <flux:button icon="plus" title="Agregar platillo" class="bg-black-food [&_svg]:text-white hover:!bg-zinc-700 transition-colors cursor-pointer"/>
@@ -23,7 +23,7 @@
                 @endif
                 @if(auth()->user()->rol === 'cliente')
                 {{-- AQUI AGREGAN LA FUNCIONALIDAD DE DESCARGAR EL MENU --}}
-                <flux:button icon="download" title="Descargar menú" class="bg-green-600 [&_svg]:text-white hover:!bg-green-700 transition-colors cursor-pointer"/>
+                <flux:button href="{{ route('platillos.export.pdf') }}" icon="download" title="Descargar menú" class="bg-green-600 [&_svg]:text-white hover:!bg-green-700 transition-colors cursor-pointer"/>
                 @endif
             </div>
         </div>
