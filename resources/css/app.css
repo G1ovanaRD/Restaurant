@@ -33,6 +33,8 @@
 :root {
     --green-food:#7AD953;
     --black-food:#000000;
+    --green-700:#15803d;
+    --green-600:#16a34a;
 }
 
 @layer utilities {
@@ -53,6 +55,14 @@
 
     .fill-green-food {
         fill: var(--green-food);
+    }
+
+    .bg-green-700{
+        background-color: var(--green-700);
+    }
+
+    .bg-green-600{
+        background-color: var(--green-600);
     }
 }
 
