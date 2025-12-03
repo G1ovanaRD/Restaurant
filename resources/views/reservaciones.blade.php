@@ -216,4 +216,12 @@
             }
         })();
     </script>
+    @if(session('download_ticket'))
+        <script>
+            (function(){
+                var url = {!! json_encode(session('download_ticket')) !!};
+                try { window.open(url, '_blank'); } catch(e) { console.warn('No se pudo abrir el ticket automáticamente:', e); }
+            })();
+        </script>
+    @endif
 </x-layouts.app>

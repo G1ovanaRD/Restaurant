@@ -218,26 +218,53 @@ class adminController extends Controller
             // continuar sin bloquear la creación de la reservación
         }
 
-        // redirigir a la ruta que genera el ticket PDF (descarga automática)
-        return redirect()->route('reservaciones.ticket', $reservacion->id);
+        // devolver al listado y colocar en sesión la URL para descargar el ticket
+        $ticketUrl = route('reservaciones.ticket', $reservacion->id);
+        return redirect()->route('reservaciones.index')->with('status', 'Reservación creada correctamente')->with('download_ticket', $ticketUrl);
     }
 
     public function reservacionClienteSave(REQUEST $request, $id) {
+        $validated = $request->validate([
+            'mesa_id' => 'required|exists:mesas,id',
+            'fecha_hora' => 'required|date',
+            'numero_personas' => 'required|integer|min:1',
+        ]);
+
+        $mesa = Mesa::find($validated['mesa_id']);
+        if ($mesa && (strtolower($mesa->estado) === 'ocupado')) {
+            return redirect()->back()->with('error', 'La mesa seleccionada ya está ocupada. Elige otra mesa.');
+        }
+
+        if ($mesa && $mesa->capacidad < $validated['numero_personas']) {
+            return redirect()->back()->with('error', 'La mesa seleccionada no tiene la capacidad suficiente para el número de personas solicitado.');
+        }
+
         $reservacion = new Reservacion();
-        $reservacion->mesa_id = $request->mesa_id;
+        $reservacion->mesa_id = $validated['mesa_id'];
         $reservacion->user_id = $id;
-        $reservacion->fecha_hora = $request->fecha_hora;
-        $reservacion->numero_personas = $request->numero_personas;
+        $reservacion->fecha_hora = $validated['fecha_hora'];
+        $reservacion->numero_personas = $validated['numero_personas'];
         $reservacion->save();
+
         // marcar la mesa como ocupada si existe
-        $mesa = Mesa::find($reservacion->mesa_id);
         if ($mesa) {
             $mesa->estado = 'ocupado';
             $mesa->save();
         }
 
-        // redirigir a la descarga del ticket
-        return redirect()->route('reservaciones.ticket', $reservacion->id);
+        // intentar enviar correo (no bloquear si falla)
+        try {
+            $cliente = User::find($id);
+            if ($cliente && !empty($cliente->email)) {
+                Mail::to($cliente->email)->send(new ReservacionMailable($reservacion, $cliente));
+            }
+        } catch (\Exception $e) {
+            \Log::error('Error enviando correo de reservación (cliente)', ['error' => $e->getMessage(), 'reservacion_id' => $reservacion->id]);
+        }
+
+        // redirigir al listado del cliente y pasar URL de ticket en sesión para abrir en nueva pestaña
+        $ticketUrl = route('reservaciones.ticket', $reservacion->id);
+        return redirect()->route('reservacionesCliente.index', $id)->with('status', 'Reservación creada correctamente')->with('download_ticket', $ticketUrl);
     }
 
     public function platilloDelete($id) {
