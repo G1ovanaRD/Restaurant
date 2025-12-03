@@ -35,7 +35,7 @@
                         {{ __('Platillos') }}
                     </flux:navbar.item>
                     <flux:navbar.item icon="clock" :href="route('reservacionesCliente.index', auth()->user()->id)" :current="request()->routeIs('reservacionesCliente.index')" wire:navigate>
-                        {{ __('ReservarC') }}
+                        {{ __('Reservar') }}
                     </flux:navbar.item>
                 @endif
             </flux:navbar>

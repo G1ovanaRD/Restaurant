@@ -68,51 +68,98 @@
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const container = document.getElementById('carrusel-container');
-    const scrollLeft = document.getElementById('scroll-left');
-    const scrollRight = document.getElementById('scroll-right');
-    const scrollAmount = 350;
-    
-    // Botones de scroll
-    scrollLeft.addEventListener('click', function(e) {
-        e.preventDefault();
-        container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-    });
-    
-    scrollRight.addEventListener('click', function(e) {
-        e.preventDefault();
-        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    });
-    
-    // Cargar platillos desde la API
-    fetch('http://localhost:8001/api/platillo')
-        .then(response => response.json())
-        .then(data => {
-            // Tomar solo los primeros 5 registros
-            const platillos = data.slice(0, 5);
-            
-            // Renderizar los platillos
-            container.innerHTML = platillos.map(platillo => `
-                <div class="flex-none w-80 snap-start">
-                    <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-lg overflow-hidden border border-zinc-200 dark:border-zinc-700 hover:shadow-xl transition-shadow">
-                        <img src="${platillo.imagen}" alt="${platillo.nombre}" class="w-full h-48 object-cover">
-                        
-                        <div class="p-4 space-y-3">
-                            <div>
-                                <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">${platillo.nombre}</h3>
-                                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-lime-100 text-black dark:bg-lime-900 dark:text-lime-100 mt-1">${platillo.categoria}</span>
-                            </div>
-                            <p class="text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">${platillo.descripcion}</p>
-                            <p class="text-lg font-bold text-green-600 dark:text-green-food">$${platillo.precio}</p>
+(function () {
+    function renderPlatillos(container, platillos) {
+        container.innerHTML = platillos.map(platillo => `
+            <div class="flex-none w-80 snap-start">
+                <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-lg overflow-hidden border border-zinc-200 dark:border-zinc-700 hover:shadow-xl transition-shadow">
+                    <img src="${platillo.imagen}" alt="${platillo.nombre}" class="w-full h-48 object-cover">
+                    <div class="p-4 space-y-3">
+                        <div>
+                            <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">${platillo.nombre}</h3>
+                            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-lime-100 text-black dark:bg-lime-900 dark:text-lime-100 mt-1">${platillo.categoria}</span>
                         </div>
+                        <p class="text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">${platillo.descripcion}</p>
+                        <p class="text-lg font-bold text-green-600 dark:text-green-food">$${platillo.precio}</p>
                     </div>
                 </div>
-            `).join('');
-        })
-        .catch(error => {
-            console.error('Error al cargar los platillos:', error);
-            container.innerHTML = '<p class="text-red-500">Error al cargar los platillos</p>';
-        });
-});
+            </div>
+        `).join('');
+    }
+
+    async function loadPlatillos() {
+        const container = document.getElementById('carrusel-container');
+        if (!container) return;
+
+        // si ya hay contenido, no volver a cargar (quita esta línea si quieres refresh siempre)
+        if (container.children.length > 0) return;
+
+        // evita doble fetch concurrente
+        if (container.dataset.loading === 'true') return;
+        container.dataset.loading = 'true';
+
+        // opción: mostrar estado de carga
+        const previous = container.innerHTML;
+        container.innerHTML = '<p class="p-4 text-sm text-zinc-500">Cargando platillos…</p>';
+
+        try {
+            const res = await fetch('http://localhost:8001/api/platillo');
+            if (!res.ok) throw new Error('Respuesta de la API: ' + res.status);
+            const data = await res.json();
+
+            // Ajusta esta línea si tu API devuelve { data: [...] } u otra estructura.
+            const lista = Array.isArray(data) ? data.slice(0,5) : (Array.isArray(data.data) ? data.data.slice(0,5) : []);
+            if (lista.length === 0) {
+                container.innerHTML = '<p class="p-4 text-sm text-zinc-500">No hay platillos para mostrar.</p>';
+                return;
+            }
+
+            renderPlatillos(container, lista);
+        } catch (err) {
+            console.error('Error al cargar los platillos:', err);
+            container.innerHTML = '<p class="text-red-500 p-4">Error al cargar los platillos</p>';
+            // opcional: restaura previo contenido
+            // container.innerHTML = previous;
+        } finally {
+            delete container.dataset.loading;
+        }
+    }
+
+    // Escucha múltiples eventos de navegación que usan spa libs
+    const navEvents = [
+        'DOMContentLoaded',
+        'turbolinks:load',
+        'turbo:load',
+        'pjax:complete',
+        'inertia:navigate',
+        'inertia:finish',
+        'pageshow',
+        'popstate'
+    ];
+
+    navEvents.forEach(ev => {
+        window.addEventListener(ev, loadPlatillos, { passive: true });
+    });
+
+    // Además observa si el contenedor es añadido dinámicamente al DOM
+    const docObserver = new MutationObserver((mutations) => {
+        for (const m of mutations) {
+            for (const node of m.addedNodes) {
+                if (!(node instanceof HTMLElement)) continue;
+                if (node.id === 'carrusel-container' || node.querySelector && node.querySelector('#carrusel-container')) {
+                    // pequeño delay para que el DOM termine de montarse en frameworks
+                    setTimeout(loadPlatillos, 20);
+                    return;
+                }
+            }
+        }
+    });
+
+    docObserver.observe(document.documentElement, { childList: true, subtree: true });
+
+    // Por si el script se ejecuta después de que el DOM ya está listo:
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        setTimeout(loadPlatillos, 0);
+    }
+})();
 </script>
